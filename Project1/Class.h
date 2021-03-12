@@ -1,14 +1,7 @@
 #pragma once
 
 
-
-enum class SiteClass {                  //    class cell      
-    undefined = 0,
-    core,
-    pad,
-};
-
-enum class MacroClass {                 //macro class
+enum class ElementClass {               //macro and site class
     undefined = 0,
     core,
     pad,
@@ -37,7 +30,7 @@ enum class LayerType {                  //type layer
     implant,
     masterslice,
 };
-enum class LayerDirection {             // layer direction
+enum class LayerDirection {             //layer direction
     undefined = 0,
     horizontal,
     vertical,
@@ -45,16 +38,16 @@ enum class LayerDirection {             // layer direction
 
 struct Size {                           //Size cell
     float x,
-        y;
+          y;
 };
-struct Site {                           // The SITE section describes the cell for the location of the components
+struct Site {                           //The SITE section describes the cell for the location of the components
     std::string name;
     bool        symmetryX,
-        symmetryY;
-    SiteClass   siteClass;
+                symmetryY;
+    ElementClass   siteClass;
     Size        size;
 public:
-    Site(std::string name) : name(name), symmetryX(false), symmetryY(false), siteClass(SiteClass::undefined), size({ 0.0f, 0.0f }) {}
+    Site(std::string name) : name(name), symmetryX(false), symmetryY(false), siteClass(ElementClass::undefined), size({ 0.0f, 0.0f }) {}
 };
 
 //DEF
@@ -89,9 +82,9 @@ Row::Row(std::string name) : name(name) {}
 class Component {
 public:
     std::string         name;
-    std::string         name_model_in_LEF;
+    std::string         name_model_in_LEF;                  //name model in LEF file
     Orintation          orintation;
-    int                 x_position, y_position;
+    int                 x_position, y_position;             //location
 public:
     Component(std::string name);
 };
@@ -100,9 +93,9 @@ Component::Component(std::string name) : name(name) {}
 class PinDef {
 public:
     std::string         name;
-    std::string         name_connected_wire;
+    std::string         name_connected_wire;                //name connected wire
     PinDirection        direction;
-    int                 x_position, y_position;
+    int                 x_position, y_position;             //location
     Orintation          orintation;
     PinUse              use;
 public:
@@ -113,13 +106,13 @@ PinDef::PinDef(std::string name) : name(name) {}
 class DEFFile {
     std::string                 fileName;
     std::string                 desing_name;
-    std::vector<DieArea*>       dieareas;
+    std::vector<DieArea*>       dieareas;                    //size and form cristall
     std::vector<Row*>           rows;
     std::vector<Component*>     components;
     std::vector<PinDef*>        pins;
     float                       version;
     int                         microns;                // units
-    int                   count_components, count_pins, count_special_nets, count_nets;
+    int                   count_components, count_pins, count_special_nets, count_nets;     //kol-vo pins, components, ...
 public:
     DEFFile();
     ~DEFFile();
@@ -145,32 +138,14 @@ DEFFile::~DEFFile() {
 //LEF
 class Polygon {                         
 public:
-    std::vector<double>  position;
+    std::vector<double>  position;          //position point
 };
 
-
-class Layer {                               //Metallization
-public:
-    std::string             name;
-    std::vector<Polygon*>   polygons;
-    std::vector<double>     position;
-public:
-    Layer(std::string name);
-    ~Layer();
-};
-
-Layer::Layer(std::string name) : name(name) {}
-Layer::~Layer() {
-    for (size_t i = 0; i < polygons.size(); ++i)
-        delete polygons[i];
-    polygons.clear();
-}
 
 class Pin {
 public:
     std::string             name;
     PinDirection            direction;
-    std::vector<Layer*>     layers;
     std::vector<Polygon*>   polygons;
 public:
     Pin(std::string name);
@@ -180,16 +155,11 @@ public:
 };
 
 Pin::Pin(std::string name) : name(name), direction(PinDirection::undefined) {}
-Pin::~Pin() {
-    for (size_t i = 0; i < layers.size(); ++i)
-        delete layers[i];
-    layers.clear();
-}
+Pin::~Pin() {}
 
 class OBS {
 public:
     std::vector<Polygon*>   polygons;
-    //std::vector<double>     position;
 public:
     ~OBS();
 public:
@@ -202,11 +172,11 @@ public:
     std::string         name;
     std::vector<Pin*>   pins;
     std::vector<OBS*>   obss;
-    SiteClass           site_class;
+    ElementClass        site_class;
     float size_x, size_y;
     bool        symmetryX,
-        symmetryY;
-    MacroClass           macro_class;
+                symmetryY;
+    ElementClass        macro_class;
 public:
     Macro(std::string name);
     ~Macro();
@@ -229,8 +199,8 @@ class LEFFile {
     float                 version;
     int                   microns;  // units
     float                 manufacturingGrid;
-    std::vector<Site*>   sites;
-    std::vector<Macro*>  macroes;
+    std::vector<Site*>    sites;
+    std::vector<Macro*>   macroes;
 public:
     LEFFile();
     ~LEFFile();

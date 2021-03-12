@@ -29,7 +29,7 @@ bool LEFFile::ReadUnits(std::ifstream& lefFile) {       //read Units
 
         std::istringstream iss(line);
         iss >> token;
-        if (token == "END") {
+        if (token == "END") {                           //chec end Units
             iss >> token;
             if (token == "UNITS")
                 return true;
@@ -70,7 +70,7 @@ bool LEFFile::ReadSite(std::ifstream& lefFile, std::string& name) {             
         std::istringstream iss(line);
         iss >> token;
 
-        if (token == "END") {
+        if (token == "END") {                                   //chec end Site             
             iss >> token;
             if (token == name)
                 return true;
@@ -94,11 +94,11 @@ bool LEFFile::ReadSite(std::ifstream& lefFile, std::string& name) {             
         if (token == "CLASS") {
             iss >> token;
             if (token == "CORE") {
-                p_site->siteClass = SiteClass::core;
+                p_site->siteClass = ElementClass::core;
                 continue;
             }
             if (token == "PAD") {
-                p_site->siteClass = SiteClass::pad;
+                p_site->siteClass = ElementClass::pad;
                 continue;
             }
             std::cerr << "_wrn_ : [Reading SITE] Unsupported SITE CLASS type '" << token << "'. Line ignored." << std::endl;
@@ -117,7 +117,7 @@ bool LEFFile::ReadSite(std::ifstream& lefFile, std::string& name) {             
 }
 
 
-bool Pin::ReadPolygon(std::ifstream& lefFile, std::string) {            //read point position in Polygon and Rect
+bool Pin::ReadPolygon(std::ifstream& lefFile, std::string) {        //read point position in Polygon and Rect
     std::string line,
         token;
     while (std::getline(lefFile, line)) {
@@ -130,26 +130,26 @@ bool Pin::ReadPolygon(std::ifstream& lefFile, std::string) {            //read p
         std::istringstream iss(line);
         iss >> token;
 
-        if (token == "END")                             //check end section
+        if (token == "END")                                         //check end Polygons and Rects
             return true;
 
         if (token == "RECT") {
             Polygon* p_pol = new Polygon;
             for (int i = 0; ; i++) {
                 iss >> token;
-                if (token == ";") {                    //check end REct
-                    polygons.push_back(p_pol);
+                if (token == ";") {                                 //check end REct
+                    polygons.push_back(p_pol);                      //add polygon in PIN
                     break;
                 }
-                p_pol->position.push_back(std::stod(token));
+                p_pol->position.push_back(std::stod(token));        //add position piont in POLYGON
             }
         }
         if (token == "POLYGON") {
             Polygon* p_pol = new Polygon;
             for (int i = 0; ; i++) {
                 iss >> token;
-                if (token == ";") {                   //check end polygon
-                    polygons.push_back(p_pol);
+                if (token == ";") {                                 //check end Polygon
+                    polygons.push_back(p_pol);                      //add polygon in PIN
                     break;
                 }
                 if (iss.eof()) {                                    //skleyka strok pri perenose
@@ -158,7 +158,7 @@ bool Pin::ReadPolygon(std::ifstream& lefFile, std::string) {            //read p
                     iss.clear();
                     iss.str(line);
                 }
-                p_pol->position.push_back(std::stod(token));
+                p_pol->position.push_back(std::stod(token));        //add position piont in POLYGON
             }
         }
     }
@@ -181,7 +181,7 @@ bool Macro::ReadPin(std::ifstream& lefFile, std::string& name) {        //read p
         std::istringstream iss(line);
         iss >> token;
 
-        if (token == "END") {                   //check end section
+        if (token == "END") {                   //check end PIN
             iss >> token;
             if (token == name)
                 return true;
@@ -240,6 +240,12 @@ bool OBS::ReadPolygon(std::ifstream& lefFile, std::string) {            //read p
         std::istringstream iss(line);
         iss >> token;
 
+        
+        if (token == "LAYER")
+        {
+            ReadPolygon(lefFile, token);                    //recursion for the case of finding multiple LAYER in OBS
+            return true;
+        }
         if (token == "END")                                 //check end section OBS
             return true;
 
@@ -301,6 +307,7 @@ bool Macro::ReadObs(std::ifstream& lefFile, std::string) {                      
         }
         return false;
     }
+    return true;
 }
 
 bool LEFFile::ReadMacro(std::ifstream& lefFile, std::string& name) {                //read Macros
@@ -331,11 +338,11 @@ bool LEFFile::ReadMacro(std::ifstream& lefFile, std::string& name) {            
         if (token == "CLASS") {                                 //Macro class
             iss >> token;
             if (token == "CORE") {
-                p_mac->macro_class = MacroClass::core;
+                p_mac->macro_class = ElementClass::core;
                 continue;
             }
             if (token == "PAD") {
-                p_mac->macro_class = MacroClass::pad;
+                p_mac->macro_class = ElementClass::pad;
                 continue;
             }
             std::cerr << "_wrn_ : [Reading MACRO " << name << " ] Unsupported SITE CLASS type '" << token << "'. Line ignored." << std::endl;

@@ -7,7 +7,6 @@
 #include "Class.h"
 
 
-
 //functions read DEF section
 
 bool DEFFile::ReadRow(std::ifstream& defFile, std::string& name) {              //read Rows
@@ -152,11 +151,11 @@ bool DEFFile::ReadPins(std::ifstream& defFile, std::string& name) {             
     return true;
 }
 
-bool DEFFile::ReadSpecialNets(std::ifstream& defFile) {     //dont use
+bool DEFFile::ReadSpecialNets(std::ifstream& defFile) {     //dont need now
     return true;
 }
 
-bool DEFFile::ReadNets(std::ifstream& defFile) {            //dont use
+bool DEFFile::ReadNets(std::ifstream& defFile) {            //dont need now
     return true;
 }
 
@@ -186,4 +185,5 @@ bool DEFFile::ReadDieArea(std::ifstream& defFile) {         //read Size and form
             }
         }
     } while (token != ";");
+    return true;
 }
