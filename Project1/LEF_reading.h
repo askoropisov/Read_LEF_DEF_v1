@@ -118,9 +118,6 @@ bool LEFFile::ReadSite(std::ifstream& lefFile, std::string& name) {             
 
 
 bool Pin::ReadPolygon(std::ifstream& lefFile, std::string) {            //read point position in Polygon and Rect
-    Polygon* p_pol = new Polygon;
-    polygons.push_back(p_pol);
-
     std::string line,
         token;
     while (std::getline(lefFile, line)) {
@@ -137,18 +134,24 @@ bool Pin::ReadPolygon(std::ifstream& lefFile, std::string) {            //read p
             return true;
 
         if (token == "RECT") {
+            Polygon* p_pol = new Polygon;
             for (int i = 0; ; i++) {
                 iss >> token;
-                if (token == ";")                       //check end REct
+                if (token == ";") {                    //check end REct
+                    polygons.push_back(p_pol);
                     break;
+                }
                 p_pol->position.push_back(std::stod(token));
             }
         }
         if (token == "POLYGON") {
+            Polygon* p_pol = new Polygon;
             for (int i = 0; ; i++) {
                 iss >> token;
-                if (token == ";")                       //check end polygon
+                if (token == ";") {                   //check end polygon
+                    polygons.push_back(p_pol);
                     break;
+                }
                 if (iss.eof()) {                                    //skleyka strok pri perenose
                     std::getline(lefFile, line);
                     iss.str("");
@@ -223,11 +226,8 @@ bool Macro::ReadPin(std::ifstream& lefFile, std::string& name) {        //read p
     return true;
 }
 
+bool OBS::ReadPolygon(std::ifstream& lefFile, std::string) {            //read point position in Polygon and Rect in OBS
 
-
-bool Macro::ReadObs(std::ifstream& lefFile, std::string) {                      //read OBS(препятствия)
-    OBS* p_obs = new OBS;
-    obss.push_back(p_obs);
     std::string line,
         token;
     while (std::getline(lefFile, line)) {
@@ -240,41 +240,67 @@ bool Macro::ReadObs(std::ifstream& lefFile, std::string) {                      
         std::istringstream iss(line);
         iss >> token;
 
-        if (token == "END") {                           //check end section
+        if (token == "END")                                 //check end section OBS
             return true;
-            std::cerr << "_wrn_ : [Reading LAYER] Unsupported" << token << "'. Line ignored." << std::endl;
-            return false;
-        }
 
         if (token == "RECT") {
             Polygon* p_pol = new Polygon;
             for (int i = 0; ; i++) {
                 iss >> token;
-                if (token == ";") {                      //check end Rect
+                if (token == ";") {                         //check end REct
+                    polygons.push_back(p_pol);              //add polygon in OBS
                     break;
                 }
-                p_pol->position.push_back(std::stod(token));
-            }
+                p_pol->position.push_back(std::stod(token));            //add position piont in POLYGON
+            }   
         }
         if (token == "POLYGON") {
             Polygon* p_pol = new Polygon;
-
             for (int i = 0; ; i++) {
                 iss >> token;
-                if (token == ";") {                    //check end Polygon
+                if (token == ";") {                         //check end polygon
+                    polygons.push_back(p_pol);              //add polygon in OBS
                     break;
                 }
-                if (iss.eof()) {                        //skleyka strok
+                if (iss.eof()) {                                    //skleyka strok pri perenose
                     std::getline(lefFile, line);
                     iss.str("");
                     iss.clear();
                     iss.str(line);
                 }
-                p_pol->position.push_back(std::stod(token));
+                p_pol->position.push_back(std::stod(token));            //add position piont in POLYGON
             }
         }
     }
     return true;
+}
+
+
+bool Macro::ReadObs(std::ifstream& lefFile, std::string) {                      //read OBS(препятствия)
+    OBS* p_obs = new OBS;
+    obss.push_back(p_obs);
+
+    std::string line,
+        token;
+    while (std::getline(lefFile, line)) {
+        trim_left(line);
+        if (line.empty())
+            continue;
+        if (line[0] == '#')
+            continue;
+
+        std::istringstream iss(line);
+        iss >> token;
+
+        if (token == "LAYER") {                                              //read Polygons and Rects
+            if (!p_obs->ReadPolygon(lefFile, token)) {
+                lefFile.close();
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
 }
 
 bool LEFFile::ReadMacro(std::ifstream& lefFile, std::string& name) {                //read Macros
@@ -302,7 +328,7 @@ bool LEFFile::ReadMacro(std::ifstream& lefFile, std::string& name) {            
             return false;
         }
 
-        if (token == "CLASS") {
+        if (token == "CLASS") {                                 //Macro class
             iss >> token;
             if (token == "CORE") {
                 p_mac->macro_class = MacroClass::core;
