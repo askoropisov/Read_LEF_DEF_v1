@@ -68,6 +68,7 @@ bool LEFFile::Read(std::string filename) {
         }
         if (token == "MACRO") {
             iss >> token;
+            name_Macro.push_back(token);
             if (!ReadMacro(lefFile, token)) {
                 lefFile.close();
                 return false;

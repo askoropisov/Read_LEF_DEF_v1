@@ -1,5 +1,6 @@
 #pragma once
 
+std::vector<std::string>        name_Macro;
 
 enum class ElementClass {               //macro and site class
     undefined = 0,

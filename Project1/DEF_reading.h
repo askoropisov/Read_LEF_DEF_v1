@@ -232,6 +232,12 @@ bool DEFFile::ReadComponents(std::ifstream& defFile, std::string& name) {       
     return true;
 }
 
+std::string name_component(std::string) {
+    std::string word;
+    
+    return word;
+}
+
 
 bool DEFFile::ReadPins(std::ifstream& defFile, std::string& name) {                     //read Pins
     PinDef* p_pin = new PinDef(name);                                                   //name Pin
