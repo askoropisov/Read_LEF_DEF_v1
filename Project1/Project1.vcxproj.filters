@@ -20,13 +20,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Class.h">
-      <Filter>Исходные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="LEF_reading.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
     <ClInclude Include="DEF_reading.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="DEF_class.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="LEF_class.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>

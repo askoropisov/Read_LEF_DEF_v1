@@ -142,7 +142,8 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Class.h" />
+    <ClInclude Include="LEF_class.h" />
+    <ClInclude Include="DEF_class.h" />
     <ClInclude Include="DEF_reading.h" />
     <ClInclude Include="LEF_reading.h" />
   </ItemGroup>

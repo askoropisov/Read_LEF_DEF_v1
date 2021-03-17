@@ -4,7 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include "Class.h"
+#include "LEF_class.h"
 
 
 void trim_left(std::string& text) {                     //skip line
@@ -15,6 +15,72 @@ void trim_left(std::string& text) {                     //skip line
         return;
     text.erase(0, pos);
 }
+
+
+//Read LEF file
+
+bool LEFFile::Read(std::string filename) {
+    std::ifstream lefFile(filename);
+    if (!lefFile.is_open())
+        return false;
+
+    std::string line,
+        token;
+    while (std::getline(lefFile, line)) {
+        // 1. Trim the line to be sure that first symbol is nos a space char
+        trim_left(line);
+        // 2. Ignore empty and commented lines
+        if (line.empty())
+            continue;
+        if (line[0] == '#')
+            continue;
+
+        std::istringstream iss(line);
+        iss >> token;
+        // 3. Ignore unimportans statements
+        if (token == "DIVIDERCHAR")
+            continue;
+        if (token == "BUSBITCHARS")
+            continue;
+        // 4. Read importans statements
+        if (token == "VERSION") {
+            iss >> version;
+            continue;
+        }
+        if (token == "UNITS") {
+            if (!ReadUnits(lefFile)) {
+                lefFile.close();
+                return false;
+            }
+            continue;
+        }
+        if (token == "MANUFACTURINGGRID") {
+            iss >> manufacturingGrid;
+            continue;
+        }
+        if (token == "SITE") {
+            iss >> token;
+            if (!ReadSite(lefFile, token)) {
+                lefFile.close();
+                return false;
+            }
+            continue;
+        }
+        if (token == "MACRO") {
+            iss >> token;
+            if (!ReadMacro(lefFile, token)) {
+                lefFile.close();
+                return false;
+            }
+            continue;
+        }
+    }
+
+    lefFile.close();
+    fileName = filename;
+    return true;
+}
+
 
 //functions read LEF section
 bool LEFFile::ReadUnits(std::ifstream& lefFile) {       //read Units
