@@ -449,7 +449,7 @@ bool LEFFile::ReadMacro(std::ifstream& lefFile, std::string& name) {            
             }
             continue;
         }
-        std::cerr << "_wrn_ : [Reading MACRO " << name << " ] Unsupported token '" << token << "'. Line ignored." << std::endl;
+        //std::cerr << "_wrn_ : [Reading MACRO " << name << " ] Unsupported token '" << token << "'. Line ignored." << std::endl;
         continue;
     }
     return true;

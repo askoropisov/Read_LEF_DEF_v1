@@ -59,7 +59,7 @@ bool DEFFile::Read(std::string filename) {
                 defFile.close();
                 return false;
             }
-            std::cout << std::endl << "DIEAREA successfully read";
+           // std::cout << std::endl << "DIEAREA successfully read";
             continue;
         }
         if (token == "ROW") {
@@ -81,7 +81,7 @@ bool DEFFile::Read(std::string filename) {
                 defFile >> token;
                 if (token == "END") {
                     defFile >> trash;
-                    std::cout << std::endl << "COMPONENTS successfully read";
+                   // std::cout << std::endl << "COMPONENTS successfully read";
                     break;
                 }
                 if (token == "-") {
@@ -101,7 +101,7 @@ bool DEFFile::Read(std::string filename) {
                 defFile >> token;
                 if (token == "END") {
                     defFile >> trash;
-                    std::cout << std::endl << "PINS successfully read";
+                    //std::cout << std::endl << "PINS successfully read";
                     break;
                 }
                 if (token == "-") {
@@ -232,13 +232,6 @@ bool DEFFile::ReadComponents(std::ifstream& defFile, std::string& name) {       
     defFile >> trash;
     return true;
 }
-
-std::string name_component(std::string) {
-    std::string word;
-    
-    return word;
-}
-
 
 bool DEFFile::ReadPins(std::ifstream& defFile, std::string& name) {                     //read Pins
     PinDef* p_pin = new PinDef(name);                                                   //name Pin
