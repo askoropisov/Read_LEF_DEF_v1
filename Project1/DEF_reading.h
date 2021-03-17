@@ -199,6 +199,7 @@ bool DEFFile::ReadComponents(std::ifstream& defFile, std::string& name) {       
 
     std::string token, trash;
     defFile >> p_com->name_model_in_LEF;                                                //name model in LEF file
+    name_Component.push_back(p_com->name_model_in_LEF);
     defFile >> trash >> trash >> trash;
     defFile >> p_com->x_position;                                                       //location component
     defFile >> p_com->y_position;

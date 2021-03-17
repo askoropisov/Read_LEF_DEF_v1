@@ -1,5 +1,6 @@
 #pragma once
 
+std::vector<std::string>        name_Component;
 
 enum class Orintation {                 //orientation of the element on the crystall
     undefined = 0,
