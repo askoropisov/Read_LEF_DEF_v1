@@ -28,7 +28,7 @@ bool check_compliance(){                                        //LEF and DEF fi
         } 
     }
     if (value_sovp == name_Component.size()) {
-        std::cout << std::endl << "LEF file " << lefFileName << " and DEF file " << defFileName << " they match!" << std::endl;
+        std::cout << std::endl << " LEF file and DEF file they match!" << std::endl;
         return true;
     }
     else
