@@ -112,9 +112,12 @@ bool VERFile::ReadElement(std::ifstream& verFile, std::string& name)
 
     while (true) {
         verFile >> token;
+        temp = token;
 
-        for (int i = 0; i < token.size(); i++) {            //проверка на конец блока элемента
-            last_symbol= token[i];
+
+
+        for (int i = 0; i < temp.size(); i++) {            //проверка на конец блока элемента
+            last_symbol= temp[i];
         }
         if (ascii_cod(last_symbol) == 59)
         {
