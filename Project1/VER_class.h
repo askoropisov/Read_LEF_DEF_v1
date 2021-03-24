@@ -7,11 +7,17 @@ enum class PinDirectionVerilog {               //pin direction
 	inout,
 };
 
+class Pin_Verilog {
+public:
+	std::string   name_pin;
+	std::string   name_wire;
+};
+
 class Element {
 public:
 	std::string					name_element;
 	std::string			name_component_in_def;
-	std::vector<PinDirectionVerilog>    pins;
+	std::vector<Pin_Verilog*>    pins;
 };
 
 class Inout {
@@ -21,22 +27,17 @@ public:
 	int          bit_size;
 };
 
-class Pin_Verilog {
-public:
-	std::string   name_pin;
-	std::string   name_wire;
-};
-
 class VERFile {
 public:
 	std::vector<std::string>	name_wire;
 	std::vector<Element*>		elements;
+	std::vector<Inout*>			inouts;
 public:
 	VERFile();
 	~VERFile();
 public:
 	bool Read(std::string filename);
-	bool ReadInout(std::ifstream& defFile, std::string);
+	bool ReadInout(std::ifstream& defFile, std::string& direction);
 	bool ReadElement(std::ifstream& defFile, std::string);
 private:
 
