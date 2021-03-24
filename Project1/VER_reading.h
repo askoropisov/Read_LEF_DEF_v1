@@ -38,18 +38,31 @@ bool VERFile::Read(std::string filename) {
         }
         if (token == "wire")
         {
-            verFile >> token;
-            token.erase(token.size() - 1, 1);
-            name_wire.push_back(token);
+            while (token == "wire") {
+                verFile >> token;
+                token.erase(token.size() - 1, 1);
+                name_wire.push_back(token);
+                verFile >> token;
+                continue;
+            }
+
+            while (token != "endmodule")
+            {
+                if (!ReadElement(verFile, token)) {
+                    verFile.close();
+                    return false;
+                }
+                verFile >> token;
+            }
             continue;
         }
-
-
         if (token == "endmodule") {
-            return true;
             break;
         }
+
     }
+    verFile.close();
+    return true;
 }
 
 bool VERFile::ReadInout(std::ifstream& verFile, std::string& direction)
@@ -80,9 +93,35 @@ bool VERFile::ReadInout(std::ifstream& verFile, std::string& direction)
     return true;
 }
 
-bool VERFile::ReadElement(std::ifstream& defFile, std::string)
+int ascii_cod(char x)
 {
+    int a;
+    a = x;
+    return a;
+}
 
+bool VERFile::ReadElement(std::ifstream& verFile, std::string& name)
+{
+    Element* p_el = new Element(name);
+    elements.push_back(p_el);
+
+    std::string token, trash, temp;
+    char last_symbol;
+
+    verFile >> p_el->name_component_in_def;
+
+    while (true) {
+        verFile >> token;
+
+        for (int i = 0; i < token.size(); i++) {            //проверка на конец блока элемента
+            last_symbol= token[i];
+        }
+        if (ascii_cod(last_symbol) == 59)
+        {
+            break;
+        }
+    }
     return true;
 }
+
 

@@ -15,10 +15,21 @@ public:
 
 class Element {
 public:
-	std::string					name_element;
+	std::string					name;
 	std::string			name_component_in_def;
 	std::vector<Pin_Verilog*>    pins;
+public:
+	Element(std::string name);
+	~Element();
 };
+
+Element::Element(std::string name) : name(name) {}
+Element::~Element() {
+	for (size_t i = 0; i < pins.size(); ++i)
+		delete pins[i];
+	pins.clear();
+}
+
 
 class Inout {
 public:
@@ -37,8 +48,8 @@ public:
 	~VERFile();
 public:
 	bool Read(std::string filename);
-	bool ReadInout(std::ifstream& defFile, std::string& direction);
-	bool ReadElement(std::ifstream& defFile, std::string);
+	bool ReadInout(std::ifstream& verFile, std::string& direction);
+	bool ReadElement(std::ifstream& verFile, std::string& name);
 private:
 
 };
@@ -48,4 +59,8 @@ VERFile::~VERFile() {
   for (size_t i = 0; i < elements.size(); ++i)
     delete elements[i];
   elements.clear();
+
+  for (size_t i = 0; i < inouts.size(); ++i)
+	  delete inouts[i];
+  inouts.clear();
 }
