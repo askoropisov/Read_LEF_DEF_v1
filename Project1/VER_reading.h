@@ -39,8 +39,8 @@ bool VERFile::Read(std::string filename) {
         if (token == "wire")
         {
             verFile >> token;
+            token.erase(token.size() - 1, 1);
             name_wire.push_back(token);
-            verFile >> trash;
             continue;
         }
 
@@ -54,9 +54,7 @@ bool VERFile::Read(std::string filename) {
 
 bool VERFile::ReadInout(std::ifstream& verFile, std::string& direction)
 {
-    //using namespace std;
-    std::string token, trash, temp_dir, name, temp;
-    int temp_size;
+    std::string temp_dir, name, temp;
 
     temp_dir = direction;
     verFile >> temp;
