@@ -146,6 +146,8 @@
     <ClInclude Include="DEF_class.h" />
     <ClInclude Include="DEF_reading.h" />
     <ClInclude Include="LEF_reading.h" />
+    <ClInclude Include="VER_class.h" />
+    <ClInclude Include="VER_reading.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

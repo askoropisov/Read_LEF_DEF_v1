@@ -32,5 +32,11 @@
     <ClInclude Include="LEF_class.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="VER_class.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="VER_reading.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
