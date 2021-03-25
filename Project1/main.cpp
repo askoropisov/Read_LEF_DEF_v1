@@ -15,7 +15,7 @@ std::string lefFileName = "D_CELLS_test.lef";
 std::string defFileName = "mult24.def";
 std::string verFileName = "mult24.v";
 
-
+//исправить без глобальных переменных
 bool check_compliance(){                                        //LEF and DEF file compatibility check
     std::string target_name;
     int value_sovp = 0;                                         //count sovpadeniy
@@ -70,7 +70,7 @@ int main() {
     {
         std::cout << std::endl << std::endl << "_err_ : LEF file " << lefFileName << " and DEF file " << defFileName << " don't match!" << std::endl;
         return EXIT_FAILURE;
-    };                                     
+    };       
 
     return EXIT_SUCCESS;
 }

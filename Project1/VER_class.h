@@ -17,8 +17,8 @@ public:
 class Element {
 public:
 	std::string					name;
-	std::string			name_component_in_def;
-	std::vector<Pin_Verilog*>    pins;
+	std::string					name_component_in_def;
+	std::vector<Pin_Verilog*>   pins;
 public:
 	bool ReadPinVerilog(std::ifstream& verFile, std::string& word);
 public:
@@ -53,8 +53,6 @@ public:
 	bool Read(std::string filename);
 	bool ReadInout(std::ifstream& verFile, std::string& direction);
 	bool ReadElement(std::ifstream& verFile, std::string& name);
-private:
-
 };
 
 VERFile::VERFile() {}

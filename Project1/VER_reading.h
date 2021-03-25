@@ -104,14 +104,14 @@ bool Element::ReadPinVerilog(std::ifstream& verFile, std::string& word) {
     Pin_Verilog* p_pin = new Pin_Verilog;
     pins.push_back(p_pin);
 
-    std::string temp, temp2, trash, token;
-    std::string s = "(";
+    std::string temp2, token;
+    std::string s = "(";                                        //опорные точки для определения имени wire
     std::string f = ")";
     char last_symbol;
     int pos1=0, pos2=0;
 
 
-    token = temp = word;
+    token = word;
 
     token.erase(0, 1);                                      //delete .
     if (token[0]=='.')
