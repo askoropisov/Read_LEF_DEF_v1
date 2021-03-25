@@ -11,6 +11,7 @@ class Pin_Verilog {
 public:
 	std::string   name_pin;
 	std::string   name_wire;
+
 };
 
 class Element {
@@ -18,6 +19,8 @@ public:
 	std::string					name;
 	std::string			name_component_in_def;
 	std::vector<Pin_Verilog*>    pins;
+public:
+	bool ReadPinVerilog(std::ifstream& verFile, std::string& word);
 public:
 	Element(std::string name);
 	~Element();

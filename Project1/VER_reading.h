@@ -100,30 +100,84 @@ int ascii_cod(char x)
     return a;
 }
 
+bool Element::ReadPinVerilog(std::ifstream& verFile, std::string& word) {
+    Pin_Verilog* p_pin = new Pin_Verilog;
+    pins.push_back(p_pin);
+
+    std::string temp, temp2, trash, token;
+    std::string s = "(";
+    char last_symbol;
+    int pos1=0, pos2=0;
+
+
+    token = temp = word;
+
+    token.erase(0, 1);                                      //delete .
+    if (token[0]=='.')
+        token.erase(0, 1);
+    temp2 = token;
+
+    pos1 = token.find(s, 0);
+    p_pin->name_pin = token.erase(pos1, token.size() - pos1);
+
+
+        
+
+
+
+
+
+
+
+
+    //temp2 = token;
+    //if (token[1] == '(') {
+    //    temp2.erase(1, temp2.size() - 1);
+    //}
+    //if (token[2] == '(') {
+    //    temp2.erase(2, temp2.size() - 2);
+    //}
+    //if (token[3] == '(') {
+    //    temp2.erase(3, temp2.size() - 3);
+    //}
+    //p_pin->name_pin = temp2;
+
+    //for (int i = 0; i < token.size(); i++) {            //проверка на конец блока элемента
+    //    last_symbol = token[i];
+    //}
+    //if (ascii_cod(last_symbol) == 59)
+    //{
+    //    return true;
+    //}
+    //while (true) {
+    //    verFile >> token;
+    //    token.erase(0, 1);
+
+    //}
+
+    return true;
+}
+
 bool VERFile::ReadElement(std::ifstream& verFile, std::string& name)
 {
     Element* p_el = new Element(name);
     elements.push_back(p_el);
 
-    std::string token, trash, temp;
+    std::string token, trash, temp, temp2;
     char last_symbol;
+   
 
     verFile >> p_el->name_component_in_def;
-
-    while (true) {
-        verFile >> token;
-        temp = token;
-
-
-
-        for (int i = 0; i < temp.size(); i++) {            //проверка на конец блока элемента
-            last_symbol= temp[i];
+   do {
+       verFile >> token;
+        if (!p_el->ReadPinVerilog(verFile, token)) {
+            verFile.close();
+            return false;
         }
-        if (ascii_cod(last_symbol) == 59)
-        {
-            break;
+        for (int i = 0; i < token.size(); i++) {            //проверка на конец блока элемента
+            last_symbol = token[i];
         }
-    }
+   } while (ascii_cod(last_symbol) != 59);                  //если встречаем ;, то элемент считан полностью
     return true;
 }
 
