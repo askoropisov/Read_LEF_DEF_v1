@@ -134,20 +134,21 @@ bool VERFile::ReadElement(std::ifstream& verFile, std::string& name)
     Element* p_el = new Element(name);
     elements.push_back(p_el);
 
-    std::string token, trash, temp, temp2;
-    char last_symbol;
-   
+    std::string token;
+    char last_symbol='0';
+    
 
     verFile >> p_el->name_component_in_def;
    do {
        verFile >> token;
-        if (!p_el->ReadPinVerilog(verFile, token)) {
-            verFile.close();
-            return false;
-        }
-        for (int i = 0; i < token.size(); i++) {            //проверка на конец блока элемента
-            last_symbol = token[i];
-        }
+       
+           if (!p_el->ReadPinVerilog(verFile, token)) {
+               verFile.close();
+               return false;
+           }
+           for (int i = 0; i < token.size(); i++) {            //проверка на конец блока элемента
+               last_symbol = token[i];
+           }
    } while (ascii_cod(last_symbol) != 59);                  //если встречаем ;, то элемент считан полностью
     return true;
 }
