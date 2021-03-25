@@ -106,6 +106,7 @@ bool Element::ReadPinVerilog(std::ifstream& verFile, std::string& word) {
 
     std::string temp, temp2, trash, token;
     std::string s = "(";
+    std::string f = ")";
     char last_symbol;
     int pos1=0, pos2=0;
 
@@ -118,42 +119,12 @@ bool Element::ReadPinVerilog(std::ifstream& verFile, std::string& word) {
     temp2 = token;
 
     pos1 = token.find(s, 0);
-    p_pin->name_pin = token.erase(pos1, token.size() - pos1);
+    p_pin->name_pin = token.erase(pos1, token.size() - pos1);           //обрезаем имя пина
 
-
-        
-
-
-
-
-
-
-
-
-    //temp2 = token;
-    //if (token[1] == '(') {
-    //    temp2.erase(1, temp2.size() - 1);
-    //}
-    //if (token[2] == '(') {
-    //    temp2.erase(2, temp2.size() - 2);
-    //}
-    //if (token[3] == '(') {
-    //    temp2.erase(3, temp2.size() - 3);
-    //}
-    //p_pin->name_pin = temp2;
-
-    //for (int i = 0; i < token.size(); i++) {            //проверка на конец блока элемента
-    //    last_symbol = token[i];
-    //}
-    //if (ascii_cod(last_symbol) == 59)
-    //{
-    //    return true;
-    //}
-    //while (true) {
-    //    verFile >> token;
-    //    token.erase(0, 1);
-
-    //}
+    token = temp2;
+    token.erase(0, pos1 + 1);
+    pos2 = token.find(f, 0);
+    p_pin->name_wire = token.erase(pos2, token.size() - pos2);           //обрезаем wire
 
     return true;
 }
