@@ -135,21 +135,27 @@ bool VERFile::ReadElement(std::ifstream& verFile, std::string& name)
     elements.push_back(p_el);
 
     std::string token;
-    char last_symbol='0';
+    char last_symbol = '0';
+    int a = 0;
+    std::string target = "[";
     
 
     verFile >> p_el->name_component_in_def;
-   do {
-       verFile >> token;
+    do {
+        verFile >> token;
+        a = token.find(target, 0);                              //поиск "["
+        if (a != -1) {                                          //проверка на то, что данный пин не относится к внешним пинам
+            if (token[token.length() - 1] == ';')               //проверка на окончание пина
+                return true;
+            continue;
+        }
        
-           if (!p_el->ReadPinVerilog(verFile, token)) {
+           if (!p_el->ReadPinVerilog(verFile, token)) {         //Считывание пина
                verFile.close();
                return false;
            }
-           for (int i = 0; i < token.size(); i++) {            //проверка на конец блока элемента
-               last_symbol = token[i];
-           }
-   } while (ascii_cod(last_symbol) != 59);                  //если встречаем ;, то элемент считан полностью
+
+   } while (token[token.length() - 1] != ';');                  //если встречаем ;, то элемент считан полностью
     return true;
 }
 
