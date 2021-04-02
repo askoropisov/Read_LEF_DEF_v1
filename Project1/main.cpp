@@ -15,6 +15,10 @@ std::string lefFileName = "D_CELLS_test.lef";
 std::string defFileName = "mult24.def";
 std::string verFileName = "mult24.v";
 
+LEFFile lef;
+DEFFile def;
+VERFile ver;
+
 //исправить без глобальных переменных
 bool check_compliance(){                                        //LEF and DEF file compatibility check
     std::string target_name;
@@ -37,10 +41,12 @@ bool check_compliance(){                                        //LEF and DEF fi
         return false;
 }
 
+
+
 int main() {
 
     //LEF main
-    LEFFile lef;
+    
     if (!lef.Read(lefFileName)) {
         std::cerr << "_err_ : Can't read input file '" << lefFileName << "'." << std::endl << "\tAbort." << std::endl;
         return EXIT_FAILURE;
@@ -49,7 +55,7 @@ int main() {
 
 
     //DEF main
-    DEFFile def;
+    
     if (!def.Read(defFileName)) {
         std::cerr << "_err_ : Can't read input file '" << defFileName << "'." << std::endl << "\tAbort." << std::endl;
         return EXIT_FAILURE;
@@ -70,8 +76,10 @@ int main() {
     {
         std::cout << std::endl << std::endl << "_err_ : LEF file " << lefFileName << " and DEF file " << defFileName << " don't match!" << std::endl;
         return EXIT_FAILURE;
-    };       
+    };  
 
     return EXIT_SUCCESS;
 }
+
+
 

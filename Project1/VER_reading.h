@@ -90,6 +90,7 @@ bool VERFile::ReadInout(std::ifstream& verFile, std::string& direction)
         p_ino->direction = PinDirectionVerilog::inout;
     }
     p_ino->bit_size = stod(temp)+1;
+    all_bit_size += p_ino->bit_size;
     return true;
 }
 

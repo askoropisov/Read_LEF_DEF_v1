@@ -46,6 +46,7 @@ public:
 	std::vector<std::string>	name_wire;
 	std::vector<Element*>		elements;
 	std::vector<Inout*>			inouts;
+	int all_bit_size;
 public:
 	VERFile();
 	~VERFile();
