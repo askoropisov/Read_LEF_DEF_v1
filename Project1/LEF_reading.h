@@ -7,7 +7,7 @@
 #include "LEF_class.h"
 
 
-void trim_left(std::string& text) {                     //skip line
+void trim_left(std::string& text) {                     
     size_t pos = text.find_first_not_of(" \t");
     if (!pos)
         return;
@@ -436,7 +436,19 @@ bool LEFFile::ReadMacro(std::ifstream& lefFile, std::string& name) {            
 
         if (token == "PIN") {
             iss >> token;
-            if (!p_mac->ReadPin(lefFile, token)) {
+            if (token == "vdd!" || token == "gnd!")                     //пропуск питания и земли
+            {
+                std::string temp_name = token;
+                lefFile >> token;
+                while (token!=temp_name)
+                {
+                    lefFile >> token;
+                    continue;
+                }
+                continue;
+            }
+                
+            if (!p_mac->ReadPin(lefFile, token)) {                      //чтение пинов
                 lefFile.close();
                 return false;
             }
