@@ -59,11 +59,31 @@ void RenderScene() {
 		double z = 3;
 		std::string  name_in_Macro = component->name_model_in_LEF;
 
-		for (auto macro_element : lef.macroes) {
+		for (auto macro_element : lef.macroes) {						//open MACRO
 			if (macro_element->name == name_in_Macro)
 			{
 				x_2 += macro_element->size_x;							//position vertex x2,y2
 				y_2 += macro_element->size_y;
+
+				double mass_koord[4];
+				
+				for (auto pin : macro_element->pins) {					//open PIN
+					for (auto polygon : pin->polygons) {				//open polygon
+						int i = 0;
+						for (auto position : polygon->position) {		//open position
+							mass_koord[i] = position;					//read position
+							++i;
+						}
+						glBegin(GL_POLYGON);							//draw pins (rects or rolygons)
+						glColor3f(0.5, 0.4, 0);
+						glVertex3f(mass_koord[0] + x_1, mass_koord[1] + y_1, z);		
+						glVertex3f(mass_koord[2] + x_1, mass_koord[1] + y_1, z);
+						glVertex3f(mass_koord[2] + x_1, mass_koord[3] + y_1, z);
+						glVertex3f(mass_koord[0] + x_1, mass_koord[3] + y_1, z);
+						glEnd();
+					}
+				}
+				
 				break;
 			}
 		}

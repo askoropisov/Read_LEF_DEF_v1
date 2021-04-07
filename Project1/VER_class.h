@@ -54,7 +54,7 @@ public:
 	bool Read(std::string filename);
 	bool ReadInout(std::ifstream& verFile, std::string& direction);
 	bool ReadElement(std::ifstream& verFile, std::string& name);
-};
+} ver;
 
 VERFile::VERFile() {}
 VERFile::~VERFile() {

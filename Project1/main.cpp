@@ -23,7 +23,7 @@ std::string verFileName = "mult24.v";
 
 //LEFFile lef;
 //DEFFile def;
-VERFile ver;
+//VERFile ver;
 
 //исправить без глобальных переменных
 bool check_compliance(){                                        //LEF and DEF file compatibility check
