@@ -9,14 +9,20 @@
 #include "LEF_reading.h"
 #include "DEF_reading.h"
 #include "VER_reading.h"
+#include "Draw.h"
+
+#include "glut.h"
+
+#pragma comment(lib, "opengl32.lib")
+#pragma comment(lib, "glut32.lib")
 
 
 std::string lefFileName = "D_CELLS_test.lef";
 std::string defFileName = "mult24.def";
 std::string verFileName = "mult24.v";
 
-LEFFile lef;
-DEFFile def;
+//LEFFile lef;
+//DEFFile def;
 VERFile ver;
 
 //исправить без глобальных переменных
@@ -43,7 +49,7 @@ bool check_compliance(){                                        //LEF and DEF fi
 
 
 
-int main() {
+int main(int argc, char* argv[]) {
 
     //LEF main
     
@@ -77,6 +83,26 @@ int main() {
         std::cout << std::endl << std::endl << "_err_ : LEF file " << lefFileName << " and DEF file " << defFileName << " don't match!" << std::endl;
         return EXIT_FAILURE;
     };  
+
+
+
+
+    
+
+
+
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+    glutInitWindowPosition(100, 100);
+    glutInitWindowSize(800, 800);
+    glutCreateWindow("Трассировка методом Соукупа");
+    glEnable(GL_DEPTH_TEST);
+    glClearColor(0, 0, 0, 1);
+    glutReshapeFunc(reshape);
+    glutDisplayFunc(RenderScene);
+    glutKeyboardFunc(Read_kb);
+    glutSpecialFunc(ReadSpec);
+    glutMainLoop();
 
     return EXIT_SUCCESS;
 }

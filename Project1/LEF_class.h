@@ -120,7 +120,7 @@ private:
     bool ReadUnits(std::ifstream& lefFile);
     bool ReadSite(std::ifstream& lefFile, std::string& name);
     bool ReadMacro(std::ifstream& lefFile, std::string& name);
-};
+} lef;
 
 LEFFile::LEFFile() {}
 LEFFile::~LEFFile() {

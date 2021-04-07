@@ -142,6 +142,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Draw.h" />
     <ClInclude Include="LEF_class.h" />
     <ClInclude Include="DEF_class.h" />
     <ClInclude Include="DEF_reading.h" />

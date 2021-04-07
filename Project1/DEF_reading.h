@@ -55,11 +55,8 @@ bool DEFFile::Read(std::string filename) {
             continue;
         }
         if (token == "DIEAREA") {
-            if (!ReadDieArea(defFile)) {
-                defFile.close();
-                return false;
-            }
-           // std::cout << std::endl << "DIEAREA successfully read";
+                defFile >> trash>> x_1 >> y_1>>trash;               // read koor-d cristall
+                defFile >> trash>> x_2 >> y_2>>trash;
             continue;
         }
         if (token == "ROW") {
@@ -298,32 +295,25 @@ bool DEFFile::ReadNets(std::ifstream& defFile) {            //dont need now
     return true;
 }
 
-bool DieArea::ReadPoint(std::ifstream& defFile) {           //read position point for DieArea
-    Point* p_point = new Point;
-    points.push_back(p_point);
-    std::string token;
+//bool Point_Cristall::ReadPoint(std::ifstream& defFile) {           //read position point for DieArea
+//    Point* p_point = new Point;
+//    points.push_back(p_point);
+//    std::string token;
+//
+//    while (token != ")") {
+//        defFile >> p_point->x_position;
+//        defFile >> p_point->y_position;
+//        defFile >> token;
+//    }
+//    return true;
+//}
 
-    while (token != ")") {
-        defFile >> p_point->x_position;
-        defFile >> p_point->y_position;
-        defFile >> token;
-    }
-    return true;
-}
 
-
-bool DEFFile::ReadDieArea(std::ifstream& defFile) {         //read Size and form cristall
-    DieArea* p_da = new DieArea;
-    std::string token;
-
-    do {
-        defFile >> token;
-        if (token == "(") {
-            if (!p_da->ReadPoint(defFile)) {
-                defFile.close();
-                return false;
-            }
-        }
-    } while (token != ";");
-    return true;
-}
+//bool DEFFile::ReadDieArea(std::ifstream& defFile) {         //read Size and form cristall
+//
+//    std::string token, trash;
+//
+//    defFile >> trash;
+//    
+//    return true;
+//}

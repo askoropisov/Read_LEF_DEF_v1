@@ -8,19 +8,6 @@ enum class Orintation {                 //orientation of the element on the crys
     FN, FS, FE, FW,
 };
 
-class Point {                           //for DieArea 
-public:
-    int x_position;
-    int y_position;
-};
-
-class DieArea {                     //crystal size and form
-public:
-    std::vector<Point*>  points;
-public:
-    bool ReadPoint(std::ifstream& defFile);
-};
-
 class Row {                         //lines with components
 public:
     std::string          name;
@@ -60,17 +47,19 @@ public:
 };
 PinDef::PinDef(std::string name) : name(name) {}
 
+
+
 class DEFFile {
 public:
     std::string                 fileName;
     std::string                 desing_name;
-    std::vector<DieArea*>       dieareas;                    //size and form cristall
     std::vector<Row*>           rows;
     std::vector<Component*>     components;
     std::vector<PinDef*>        pins;
+    float                       x_1, y_1, x_2, y_2;         // koor-d cristall (for size)
     float                       version;
-    int                         microns;                // units
-    int                   count_components, count_pins, count_special_nets, count_nets;     //kol-vo pins, components, ...
+    int                         microns;                    // units
+    int                         count_components, count_pins, count_special_nets, count_nets;     //kol-vo pins, components, ...
 public:
     DEFFile();
     ~DEFFile();
@@ -78,12 +67,11 @@ public:
     bool Read(std::string filename);
 private:
     bool ReadRow(std::ifstream& defFile, std::string& name);
-    bool ReadDieArea(std::ifstream& defFile);
     bool ReadComponents(std::ifstream& defFile, std::string& name);
     bool ReadPins(std::ifstream& defFile, std::string& name);
     bool ReadSpecialNets(std::ifstream& defFile);
     bool ReadNets(std::ifstream& defFile);
-};
+} def;
 
 DEFFile::DEFFile() {}
 DEFFile::~DEFFile() {
