@@ -26,17 +26,20 @@ int s_value, t_value;
 
 //function declarations
 bool input(coord& source, coord& target, int x, int y); //takes in the input coordinates and validates input
-void printMatrix(vector<vector<float>> m, int x, int y); //print a matrix
-coord traverse(vector <vector<float>>& l, int x, int y, coord s, coord t, bool isSource); //DFS part
-bool flood(vector<vector<float>>& l1, vector<vector<float>>& l2, vector<vector<float>>& l3, int x, int y, coord newSource, coord target, int via, int count0, bool isSource); //BFS part
-bool backTracking(vector<vector<float>>& l1, vector<vector<float>>& l2, vector<vector<float>>& l3, int x, int y, coord source, coord target, int via, coord source1); //To generate route
-void backToLife(vector<vector<float>>& l1, vector<vector<float>>& l2, vector<vector<float>>& l3, int x, int y); //Erase flooding after route is complete
-void undoTraversal(vector<vector<float>>& l, int x, int y, coord s, coord t); //remove route of traversal if no path is found
-void classicalImplementation(vector<vector<float>>& l1, vector<vector<float>>& l2, vector<vector<float>>& l3, int x, int y, coord source, coord target, int via, bool swapCoord, bool floodLessB); //full implementation
-coord floodLess(vector<vector<float>>& l1, vector<vector<float>>& l2, vector<vector<float>>& l3, int x, int y, coord newSource, coord target); //DFS until flooding is needed
+void printMatrix(vector<vector<int>> m, int x, int y); //print a matrix
+coord traverse(vector <vector<int>>& l, int x, int y, coord s, coord t, bool isSource); //DFS part
+bool flood(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord newSource, coord target, int via, int count0, bool isSource); //BFS part
+bool backTracking(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord source, coord target, int via, coord source1); //To generate route
+void backToLife(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y); //Erase flooding after route is complete
+void undoTraversal(vector<vector<int>>& l, int x, int y, coord s, coord t); //remove route of traversal if no path is found
+void classicalImplementation(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord source, coord target, int via, bool swapCoord, bool floodLessB); //full implementation
+coord floodLess(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord newSource, coord target); //DFS until flooding is needed
+
+vector <coord>  start;
+vector <coord>  enda;
 
 
-int main() {                    //need assign a function
+bool Soukup() {                    //need assign a function
     int x, y; //coordinates of grid
 
     //getting the input dimensions
@@ -58,10 +61,10 @@ int main() {                    //need assign a function
      cin >> floodLessB;*/
 
      //initializations
-    vector <float> rows(y);
-    vector <vector <float>> l1(x, rows); //layer 1
-    vector <vector <float>> l2(x, rows); //layer 2
-    vector <vector <float>> l3(x, rows); //layer 3
+    vector <int> rows(y);
+    vector <vector <int>> l1(x, rows); //layer 1
+    vector <vector <int>> l2(x, rows); //layer 2
+    vector <vector <int>> l3(x, rows); //layer 3
 
     
 
@@ -79,9 +82,7 @@ int main() {                    //need assign a function
 
     source.z = target.z = 1;
 
-    vector <coord>  start;
-    vector <coord>  end;
-
+    
 
     clock_t time;
     //while (source.x >= 0 && source.y >= 0 && source.z > 0 && target.x >= 0 && target.y >= 0 && target.z > 0) {
@@ -100,7 +101,7 @@ int main() {                    //need assign a function
     time = clock(); //to measure CPU time
 
     for (int i = 0; i = start.size(); i++) {
-        classicalImplementation(l1, l2, l3, x, y, start[i], end[i], via, swapCoord, floodLessB); 
+        classicalImplementation(l1, l2, l3, x, y, start[i], enda[i], via, swapCoord, floodLessB); 
         route--;
     }
 
@@ -113,7 +114,7 @@ int main() {                    //need assign a function
 //function definitions
 bool input(coord& source, coord& target, int x, int y) {
     
-    float x_source, y_source, x_target, y_target;
+    int x_source, y_source, x_target, y_target;
 
     for (auto component : def.components) {								//read component in DEF
         double x_1 = component->x_position;								//position vertex x1,y1
@@ -123,30 +124,43 @@ bool input(coord& source, coord& target, int x, int y) {
 
         std::string  name_in_Macro = component->name_model_in_LEF;
 
+        for (auto elements : ver.elements) {                             //open verilog elements
+            std::string name_wire;
+            double mass_koord[4];
 
-
-        for (auto macro_element : lef.macroes) {						//open MACRO
-            if (macro_element->name == name_in_Macro)
-            {
-                x_2 += macro_element->size_x;							//position vertex x2,y2
-                y_2 += macro_element->size_y;
-
-                double mass_koord[4];
-
-                for (auto pin : macro_element->pins) {					//open PIN
-                    for (auto polygon : pin->polygons) {				//open polygon
-                        int i = 0;
-                        for (auto position : polygon->position) {		//open position
-                            mass_koord[i] = position;					//read position
-                            ++i;
+            coord tempi;
+            for (auto pins : elements->pins) {                           //open pins
+                std::string name_pin = pins->name_pin;
+                for (auto macro : lef.macroes) {                         //open macro
+                    if (macro->name == name_in_Macro)
+                    {
+                        for (auto pin_macro : macro->pins) {            //open pin in macro
+                            if (pin_macro->name == name_pin)
+                            {
+                                
+                                for (auto polygon : pin_macro->polygons) {				//open polygon
+                                    int i = 0;
+                                    for (auto position : polygon->position) {
+                                        mass_koord[i] = position;					//read position
+                                        ++i;
+                                    }
+                                    break;                                          //close polygon
+                                }
+                                break;                                      //close pin in macro
+                            }                      
                         }
-                        x_source = (mass_koord[0] + mass_koord[2]) / 2;
-                        y_source = (mass_koord[1] + mass_koord[3]) / 2;
+                        break;                                                      //close macro
                     }
+                    break;                                                  
                 }
-
-                break;
+                name_wire = pins->name_wire;                                        //save name_wire
+                tempi.x = (mass_koord[0] + mass_koord[2]) / 2;                      //x_start
+                tempi.y = (mass_koord[1] + mass_koord[3]) / 2;                      //y_start
+                start.push_back(tempi);                                             //push_back koor-d
             }
+            
+
+
         }
     }
 
@@ -205,7 +219,7 @@ bool input(coord& source, coord& target, int x, int y) {
     return true;
 }
 
-void printMatrix(vector<vector<float>> m, int x, int y) {
+void printMatrix(vector<vector<int>> m, int x, int y) {
     for (int i = 0; i < x; i++) {
         for (int j = 0; j < y; j++) {
             cout << m[i][j] << "\t";
@@ -214,7 +228,7 @@ void printMatrix(vector<vector<float>> m, int x, int y) {
     }
 }
 
-coord traverse(vector <vector<float>>& l, int x, int y, coord s, coord t, bool isSource) {
+coord traverse(vector <vector<int>>& l, int x, int y, coord s, coord t, bool isSource) {
     //vertical
     coord newSource;
     if (s.z == 2) { //vertical
@@ -312,7 +326,7 @@ coord traverse(vector <vector<float>>& l, int x, int y, coord s, coord t, bool i
     return newSource;
 }
 
-bool flood(vector<vector<float>>& l1, vector<vector<float>>& l2, vector<vector<float>>& l3, int x, int y, coord newSource, coord target, int via, int count0, bool isSource) {
+bool flood(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord newSource, coord target, int via, int count0, bool isSource) {
     int count = count0; //initial count
     switch (newSource.z) {
     case (1): {
@@ -468,7 +482,7 @@ bool flood(vector<vector<float>>& l1, vector<vector<float>>& l2, vector<vector<f
     return false; //path not found
 }
 
-bool backTracking(vector<vector<float>>& l1, vector<vector<float>>& l2, vector<vector<float>>& l3, int x, int y, coord source, coord target, int via, coord source1) {
+bool backTracking(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord source, coord target, int via, coord source1) {
     int count = 0; //count we're looking for
     switch (target.z) {
     case(1): {
@@ -573,7 +587,7 @@ bool backTracking(vector<vector<float>>& l1, vector<vector<float>>& l2, vector<v
     return true;
 }
 
-void backToLife(vector<vector<float>>& l1, vector<vector<float>>& l2, vector<vector<float>>& l3, int x, int y) {
+void backToLife(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y) {
     for (int i = 0; i < x; i++) {
         for (int j = 0; j < y; j++) {
             // emptying flooded cells that are not part of route
@@ -594,7 +608,7 @@ void backToLife(vector<vector<float>>& l1, vector<vector<float>>& l2, vector<vec
     }
 }
 
-void classicalImplementation(vector<vector<float>>& l1, vector<vector<float>>& l2, vector<vector<float>>& l3, int x, int y, coord source, coord target, int via, bool swapCoord, bool floodLessB) {
+void classicalImplementation(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord source, coord target, int via, bool swapCoord, bool floodLessB) {
     coord newSource;
     cells = 0; //# of cells
     vias = 0; //# of vias
@@ -735,7 +749,7 @@ void classicalImplementation(vector<vector<float>>& l1, vector<vector<float>>& l
     }
 }
 
-void undoTraversal(vector<vector<float>>& l, int x, int y, coord s, coord t) {
+void undoTraversal(vector<vector<int>>& l, int x, int y, coord s, coord t) {
     if (s.z == 2) {
         if (t.x > s.x) {
             for (int i = s.x + 1; i <= t.x; i++) { //vertical
@@ -772,7 +786,7 @@ void undoTraversal(vector<vector<float>>& l, int x, int y, coord s, coord t) {
     l[s.x][s.y] = s_value; //set source to value before filling (might not be zero)
 }
 
-coord floodLess(vector<vector<float>>& l1, vector<vector<float>>& l2, vector<vector<float>>& l3, int x, int y, coord newSource, coord target) {
+coord floodLess(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord newSource, coord target) {
     int count = 0;
     coord newSource1; //return of traverse
     coord newSource2 = newSource; //parameter of traverse
