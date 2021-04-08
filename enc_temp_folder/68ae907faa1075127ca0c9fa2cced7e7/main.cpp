@@ -278,7 +278,7 @@ bool input(coord& source, coord& target, int x, int y) {
 
         }
     }
-    //определяет только один элемент в верилоге
+
 
 
 

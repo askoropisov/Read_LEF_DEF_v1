@@ -101,6 +101,7 @@ int ascii_cod(char x)
     return a;
 }
 
+//исправить!
 bool Element::ReadPinVerilog(std::ifstream& verFile, std::string& word) {
     Pin_Verilog* p_pin = new Pin_Verilog;
     pins.push_back(p_pin);
