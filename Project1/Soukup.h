@@ -112,112 +112,112 @@
 //}
 //
 ////function definitions
-//bool input(coord& source, coord& target, int x, int y) {
-//    
-//    int x_source, y_source, x_target, y_target;
-//
-//    for (auto component : def.components) {								//read component in DEF
-//        double x_1 = component->x_position;								//position vertex x1,y1
-//        double y_1 = component->y_position;
-//        double x_2 = component->y_position;
-//        double y_2 = component->y_position;
-//
-//        std::string  name_in_Macro = component->name_model_in_LEF;
-//
-//        for (auto elements : ver.elements) {                             //open verilog elements
-//            std::string name_wire;
-//            double mass_koord[4];
-//
-//            coord tempi;
-//            for (auto pins : elements->pins) {                           //open pins
-//                std::string name_pin = pins->name_pin;
-//                for (auto macro : lef.macroes) {                         //open macro
-//                    if (macro->name == name_in_Macro)
-//                    {
-//                        for (auto pin_macro : macro->pins) {            //open pin in macro
-//                            if (pin_macro->name == name_pin)
-//                            {
-//                                
-//                                for (auto polygon : pin_macro->polygons) {				//open polygon
-//                                    int i = 0;
-//                                    for (auto position : polygon->position) {
-//                                        mass_koord[i] = position;					//read position
-//                                        ++i;
-//                                    }
-//                                    break;                                          //close polygon
-//                                }
-//                                break;                                      //close pin in macro
-//                            }                      
-//                        }
-//                        break;                                                      //close macro
-//                    }
-//                    break;                                                  
-//                }
-//                name_wire = pins->name_wire;                                        //save name_wire
-//                tempi.x = (mass_koord[0] + mass_koord[2]) / 2;                      //x_start
-//                tempi.y = (mass_koord[1] + mass_koord[3]) / 2;                      //y_start
-//                start.push_back(tempi);                                             //push_back koor-d
-//            }
-//            
-//
-//
-//        }
-//    }
-//
-//
-//
-//
-//    do {
-//        cout << "\nEnter x coordinate of source\n";
-//        cin >> source.x;
-//    } while ((source.x >= 0) && (source.x >= x));
-//
-//   /* if (source.x < 0)
-//        return false;*/
-//
-//    do {
-//        cout << "Enter y coordinate of source\n";
-//        cin >> source.y;
-//    } while ((source.y >= 0) && (source.y >= y));
-//
-//  /*  if (source.y < 0)
-//        return false;*/
-//
-//    
-//
-//    //do {
-//    //    cout << "Enter z coordinate of source\n";
-//    //    cin >> source.z;
-//    //} while ((source.z > 0) && (source.z != 1) && (source.z != 2) && (source.z != 3));
-//
-//    //if (source.z < 0)
-//    //    return false;
-//
-//    do {
-//        cout << "Enter x coordinate of target\n";
-//        cin >> target.x;
-//    } while ((target.x >= 0) && (target.x >= x));
-//
-//    /*if (target.x < 0)
-//        return false;*/
-//
-//    do {
-//        cout << "Enter y coordinate of target\n";
-//        cin >> target.y;
-//    } while ((target.y >= 0) && (target.y >= y));
-//
-//    /*if (target.y < 0)
-//        return false;*/
-//
-//    //do {
-//    //    cout << "Enter z coordinate of target\n";
-//    //    cin >> target.z;
-//    //} while ((target.z > 0) && (target.z != 1) && (target.z != 2) && (target.z != 3));
-//
-//    //if (target.z < 0)
-//    //    return false;
-//    return true;
-//}
+////bool input(coord& source, coord& target, int x, int y) {
+////    
+////    int x_source, y_source, x_target, y_target;
+////
+////    for (auto component : def.components) {								//read component in DEF
+////        double x_1 = component->x_position;								//position vertex x1,y1
+////        double y_1 = component->y_position;
+////        double x_2 = component->y_position;
+////        double y_2 = component->y_position;
+////
+////        std::string  name_in_Macro = component->name_model_in_LEF;
+////
+////        for (auto elements : ver.elements) {                             //open verilog elements
+////            std::string name_wire;
+////            double mass_koord[4];
+////
+////            coord tempi;
+////            for (auto pins : elements->pins) {                           //open pins
+////                std::string name_pin = pins->name_pin;
+////                for (auto macro : lef.macroes) {                         //open macro
+////                    if (macro->name == name_in_Macro)
+////                    {
+////                        for (auto pin_macro : macro->pins) {            //open pin in macro
+////                            if (pin_macro->name == name_pin)
+////                            {
+////                                
+////                                for (auto polygon : pin_macro->polygons) {				//open polygon
+////                                    int i = 0;
+////                                    for (auto position : polygon->position) {
+////                                        mass_koord[i] = position;					//read position
+////                                        ++i;
+////                                    }
+////                                    break;                                          //close polygon
+////                                }
+////                                break;                                      //close pin in macro
+////                            }                      
+////                        }
+////                        break;                                                      //close macro
+////                    }
+////                    break;                                                  
+////                }
+////                name_wire = pins->name_wire;                                        //save name_wire
+////                tempi.x = (mass_koord[0] + mass_koord[2]) / 2;                      //x_start
+////                tempi.y = (mass_koord[1] + mass_koord[3]) / 2;                      //y_start
+////                start.push_back(tempi);                                             //push_back koor-d
+////            }
+////            
+////
+////
+////        }
+////    }
+////
+////
+////
+////
+////    do {
+////        cout << "\nEnter x coordinate of source\n";
+////        cin >> source.x;
+////    } while ((source.x >= 0) && (source.x >= x));
+////
+////   /* if (source.x < 0)
+////        return false;*/
+////
+////    do {
+////        cout << "Enter y coordinate of source\n";
+////        cin >> source.y;
+////    } while ((source.y >= 0) && (source.y >= y));
+////
+////  /*  if (source.y < 0)
+////        return false;*/
+////
+////    
+////
+////    //do {
+////    //    cout << "Enter z coordinate of source\n";
+////    //    cin >> source.z;
+////    //} while ((source.z > 0) && (source.z != 1) && (source.z != 2) && (source.z != 3));
+////
+////    //if (source.z < 0)
+////    //    return false;
+////
+////    do {
+////        cout << "Enter x coordinate of target\n";
+////        cin >> target.x;
+////    } while ((target.x >= 0) && (target.x >= x));
+////
+////    /*if (target.x < 0)
+////        return false;*/
+////
+////    do {
+////        cout << "Enter y coordinate of target\n";
+////        cin >> target.y;
+////    } while ((target.y >= 0) && (target.y >= y));
+////
+////    /*if (target.y < 0)
+////        return false;*/
+////
+////    //do {
+////    //    cout << "Enter z coordinate of target\n";
+////    //    cin >> target.z;
+////    //} while ((target.z > 0) && (target.z != 1) && (target.z != 2) && (target.z != 3));
+////
+////    //if (target.z < 0)
+////    //    return false;
+////    return true;
+////}
 //
 //void printMatrix(vector<vector<int>> m, int x, int y) {
 //    for (int i = 0; i < x; i++) {

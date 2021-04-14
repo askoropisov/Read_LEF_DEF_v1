@@ -11,6 +11,7 @@ class Pin_Verilog {
 public:
 	std::string   name_pin;
 	std::string   name_wire;
+	bool			using_flag = false;
 
 };
 

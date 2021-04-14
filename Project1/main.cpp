@@ -95,7 +95,7 @@ int main(int argc, char* argv[]) {
     };  
 
 
-    //Soukup();
+    Soukup();
 
     
 
@@ -129,7 +129,7 @@ int route = -10;
 int s_value, t_value;
 
 //function declarations
-bool input(coord& source, coord& target, int x, int y); //takes in the input coordinates and validates input
+bool input(); //takes in the input coordinates and validates input
 void printMatrix(vector<vector<int>> m, int x, int y); //print a matrix
 coord traverse(vector <vector<int>>& l, int x, int y, coord s, coord t, bool isSource); //DFS part
 bool flood(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord newSource, coord target, int via, int count0, bool isSource); //BFS part
@@ -148,16 +148,16 @@ bool Soukup() {                    //need assign a function
     //getting the input dimensions
     int via = 1; //via cost
     bool swapCoord = false; //swap source and target when no path is found
-    bool floodLessB = true; //DFS until flooding is needed
+    bool floodLessB = false; //DFS until flooding is needed
 
     //cout << "Please enter cost of via\n";
     //cin >> via;
    // cout << "Please enter the x-dimension of the plane\n";
     //cin >> x;
-    x = 100;
+    x = 7000;
     //cout << "Please enter the y-dimension of the plane\n";
     //cin >> y;
-    y = 100;
+    y = 5000;
 
     /* cout << "\nIf no path available, do you want to swap source and target and try again?\nIf yes enter 1, if no enter 0" << endl;
      cin >> swapCoord;
@@ -182,10 +182,10 @@ bool Soukup() {                    //need assign a function
     l2 = l1;
     l3 = l1;
 
-    coord source, target, start, enda;
-    source.x = source.y = target.x = target.y = 0;
-    start.x = start.y = enda.x = enda.y = 0;
-    start.z = enda.z = 1;
+    //coord source, target, start, enda;
+    //source.x = source.y = target.x = target.y = 0;
+    //start.x = start.y = enda.x = enda.y = 0;
+    //start.z = enda.z = 1;
 
 
 
@@ -205,13 +205,14 @@ bool Soukup() {                    //need assign a function
 
     time = clock(); //to measure CPU time
 
-    while (start.x >= 0) {
-        if (!input(start, enda, x, y))
-            //        return 0;
-            int k = 0;
-    //for (int i = 0; i = start.size(); i++) {
 
-        classicalImplementation(l1, l2, l3, x, y, start, enda, via, swapCoord, floodLessB);
+
+    input();
+
+    for (int i = 0; i < 10; i++) {
+
+       // input(start[i], enda[i], x, y);
+        classicalImplementation(l1, l2, l3, x, y, start[i], enda[i], via, swapCoord, floodLessB);
         route--;
     }
 
@@ -222,15 +223,13 @@ bool Soukup() {                    //need assign a function
 }
 
 //function definitions
-bool input(coord& source, coord& target, int x, int y) {
+bool input() {
 
     int x_source, y_source, x_target, y_target;
 
     for (auto component : def.components) {								//read component in DEF
-        double x_1 = component->x_position;								//position vertex x1,y1
-        double y_1 = component->y_position;
-        double x_2 = component->y_position;
-        double y_2 = component->y_position;
+        int x_1 = component->x_position;								//position vertex x1,y1
+        int y_1 = component->y_position;
 
         std::string  name_in_Macro = component->name_model_in_LEF;
         std::string name_wire, name_wire_target;
@@ -238,22 +237,21 @@ bool input(coord& source, coord& target, int x, int y) {
         for (auto elements : ver.elements) {                             //open verilog elements
             if (elements->name == name_in_Macro)
             {
-                
                 double mass_koord[4];
                 coord tempi;
                 for (auto pins : elements->pins) {                           //open pins
+                    if (pins->using_flag == true)  continue;                    //checking for repetition
                     name_wire = pins->name_wire;
                     std::string name_pin = pins->name_pin;
-                    
+                     
+                    //find first position
+
                     for (auto macro : lef.macroes) {                         //open macro
                         if (macro->name == name_in_Macro)
                         {
                             for (auto pin_macro : macro->pins) {            //open pin in macro
                                 if (pin_macro->name == name_pin)
                                 {
-                                    if (pin_macro->flag == true) break;     //this pin is already connected? if yes, then skip this pin
-                                    pin_macro->flag = true;                 //if not, then marker him
-
                                     for (auto polygon : pin_macro->polygons) {				//open polygon
                                         int i = 0;
                                         for (auto position : polygon->position) {
@@ -264,82 +262,79 @@ bool input(coord& source, coord& target, int x, int y) {
                                     }
                                     break;                                      //close pin in macro
                                 }
+                                else continue;
                             }
                             break;                                                      //close macro
                         }
-                        continue;
                     }
                     name_wire = pins->name_wire;                                        //save name_wire
-                    tempi.x = x_1+(mass_koord[0] + mass_koord[2]) / 2;                      //x_start
-                    tempi.y = y_1+(mass_koord[1] + mass_koord[3]) / 2;                      //y_start
+                    tempi.x = x_1 + (mass_koord[0] + mass_koord[2]) / 2;                      //x_start
+                    tempi.y = y_1 + (mass_koord[1] + mass_koord[3]) / 2;                      //y_start
                     tempi.z = 1;                                                            //z_start
                     start.push_back(tempi);                                             //push_back koor-d
-                }
+                    pins->using_flag = true;                                            //marker pin
+                    
 
+
+                    //find second position
+                    int second_x_1 = 0;								//position vertex x1,y1
+                    int second_y_1 = 0;
+
+                    for (auto second_element : ver.elements) {                          //open verilog elements
+
+                        double mass_koord[4];
+
+                        for (auto second_pins : second_element->pins) {                   //open pins
+                            if (second_pins->using_flag == true) continue;               //checking for repetition
+                            if (second_pins->name_wire == name_wire) {                  //
+                                name_pin == second_pins->name_pin;                       //save name pin in verilog
+                                
+
+                                std::string name_DEF_element = second_element->name_component_in_def;     //save DEF name element in verilog
+                                std::string name_LEF_element = second_element->name;                     //save LEF name element in verilog
+
+                                for (auto DEF_element : def.components) {                               //open DEF components
+                                    if (DEF_element->name == name_DEF_element) {
+                                        second_x_1 = DEF_element->x_position;                          //veftex  second x1, second y1;
+                                        second_y_1 = DEF_element->y_position;
+                                        break;                                                  //close for auto
+                                    }
+                                }
+                                for (auto LEF_macro : lef.macroes) {                                    //open LEF macro
+                                    for (auto MacroPin : LEF_macro->pins) {                             //open pins in macro
+                                        if (MacroPin->name == name_pin) {
+
+                                            for (auto polygon : MacroPin->polygons) {				//open polygon
+                                                int i = 0;
+                                                for (auto position : polygon->position) {
+                                                    mass_koord[i] = position;					//read position
+                                                    ++i;
+                                                }
+                                                break;                                          //close polygon
+                                            }
+                                            break;                                      //close pin in macro
+                                        }
+                                        else continue;
+                                    }
+                                    break;
+                                }
+                                tempi.x = second_x_1 + (mass_koord[0] + mass_koord[2]) / 2;                      //x_start
+                                tempi.y = second_y_1 + (mass_koord[1] + mass_koord[3]) / 2;                      //y_start
+                                tempi.z = 1;                                                            //z_start
+                                enda.push_back(tempi);                                             //push_back koor-d
+                                second_pins->using_flag = true;                                     //marker pin
+                                break;
+                            } 
+                        } 
+                        continue;
+                    }
+                    continue; 
+                }    
             }
-            for (auto pins : elements->pins) {                           //open pins
-                name_wire_target = pins->name_wire;
-                std::string name_pin = pins->name_pin;
-                if (name_wire_target == name_wire) {
-
-                }
-            }
-
+            continue;
         }
     }
-    //определяет только один элемент в верилоге
-
-
-
-    //do {
-    //    cout << "\nEnter x coordinate of source\n";
-    //    cin >> source.x;
-    //} while ((source.x >= 0) && (source.x >= x));
-
-    ///* if (source.x < 0)
-    //     return false;*/
-
-    //do {
-    //    cout << "Enter y coordinate of source\n";
-    //    cin >> source.y;
-    //} while ((source.y >= 0) && (source.y >= y));
-
-    ///*  if (source.y < 0)
-    //      return false;*/
-
-
-
-    //      //do {
-    //      //    cout << "Enter z coordinate of source\n";
-    //      //    cin >> source.z;
-    //      //} while ((source.z > 0) && (source.z != 1) && (source.z != 2) && (source.z != 3));
-
-    //      //if (source.z < 0)
-    //      //    return false;
-
-    //do {
-    //    cout << "Enter x coordinate of target\n";
-    //    cin >> target.x;
-    //} while ((target.x >= 0) && (target.x >= x));
-
-    ///*if (target.x < 0)
-    //    return false;*/
-
-    //do {
-    //    cout << "Enter y coordinate of target\n";
-    //    cin >> target.y;
-    //} while ((target.y >= 0) && (target.y >= y));
-
-    ///*if (target.y < 0)
-    //    return false;*/
-
-    //    //do {
-    //    //    cout << "Enter z coordinate of target\n";
-    //    //    cin >> target.z;
-    //    //} while ((target.z > 0) && (target.z != 1) && (target.z != 2) && (target.z != 3));
-
-    //    //if (target.z < 0)
-    //    //    return false;
+   
     return true;
 }
 
@@ -746,7 +741,7 @@ void classicalImplementation(vector<vector<int>>& l1, vector<vector<int>>& l2, v
     while (swap > 0) {
         switch (source.z) {
         case(1): {
-            s_value = l1[source.x][source.y]; //s_value is values of source cell (used if no path is available to retrieve old matrix)
+            s_value = l1[source.x][source.y]; //s_value is values of source cell (used if no path is available to retrieve old matrix)                      //выход за пределы масива(
             if (!floodLessB) //if implementation is not floodLess (more DFS)
                 newSource = traverse(l1, x, y, source, target, isSource);
         }
