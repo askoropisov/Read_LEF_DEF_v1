@@ -95,7 +95,7 @@ int main(int argc, char* argv[]) {
     };  
 
 
-    Soukup();
+    //Soukup();
 
     
 
@@ -143,34 +143,22 @@ vector <coord>  start;
 vector <coord>  enda;
 
 bool Soukup() {                    //need assign a function
-    int x, y; //coordinates of grid
+   unsigned  int x, y; //coordinates of grid
 
     //getting the input dimensions
     int via = 1; //via cost
     bool swapCoord = false; //swap source and target when no path is found
     bool floodLessB = false; //DFS until flooding is needed
 
-    //cout << "Please enter cost of via\n";
-    //cin >> via;
-   // cout << "Please enter the x-dimension of the plane\n";
-    //cin >> x;
-    x = 7000;
-    //cout << "Please enter the y-dimension of the plane\n";
-    //cin >> y;
-    y = 5000;
+    x = 700000;
+    y = 500000;
 
-    /* cout << "\nIf no path available, do you want to swap source and target and try again?\nIf yes enter 1, if no enter 0" << endl;
-     cin >> swapCoord;
-
-     cout << "\nDo you want to do DFS in more than one layer and thus flood less?\nIf yes enter 1, if no enter 0" << endl;
-     cin >> floodLessB;*/
 
      //initializations
     vector <int> rows(y);
     vector <vector <int>> l1(x, rows); //layer 1
     vector <vector <int>> l2(x, rows); //layer 2
     vector <vector <int>> l3(x, rows); //layer 3
-
 
 
     for (int i = 0; i < x; i++) {
@@ -181,12 +169,6 @@ bool Soukup() {                    //need assign a function
 
     l2 = l1;
     l3 = l1;
-
-    //coord source, target, start, enda;
-    //source.x = source.y = target.x = target.y = 0;
-    //start.x = start.y = enda.x = enda.y = 0;
-    //start.z = enda.z = 1;
-
 
 
     clock_t time;
