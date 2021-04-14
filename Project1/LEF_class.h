@@ -59,6 +59,7 @@ public:
     std::string             name;
     PinDirection            direction;
     std::vector<Polygon*>   polygons;
+    bool                    flag=false;
 public:
     Pin(std::string name);
     ~Pin();

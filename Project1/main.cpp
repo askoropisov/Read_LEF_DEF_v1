@@ -95,7 +95,7 @@ int main(int argc, char* argv[]) {
     };  
 
 
-    Soukup();
+    //Soukup();
 
     
 
@@ -233,13 +233,13 @@ bool input(coord& source, coord& target, int x, int y) {
         double y_2 = component->y_position;
 
         std::string  name_in_Macro = component->name_model_in_LEF;
+        std::string name_wire, name_wire_target;
 
         for (auto elements : ver.elements) {                             //open verilog elements
             if (elements->name == name_in_Macro)
             {
-                std::string name_wire;
+                
                 double mass_koord[4];
-
                 coord tempi;
                 for (auto pins : elements->pins) {                           //open pins
                     name_wire = pins->name_wire;
@@ -251,6 +251,8 @@ bool input(coord& source, coord& target, int x, int y) {
                             for (auto pin_macro : macro->pins) {            //open pin in macro
                                 if (pin_macro->name == name_pin)
                                 {
+                                    if (pin_macro->flag == true) break;     //this pin is already connected? if yes, then skip this pin
+                                    pin_macro->flag = true;                 //if not, then marker him
 
                                     for (auto polygon : pin_macro->polygons) {				//open polygon
                                         int i = 0;
@@ -274,6 +276,13 @@ bool input(coord& source, coord& target, int x, int y) {
                     start.push_back(tempi);                                             //push_back koor-d
                 }
 
+            }
+            for (auto pins : elements->pins) {                           //open pins
+                name_wire_target = pins->name_wire;
+                std::string name_pin = pins->name_pin;
+                if (name_wire_target == name_wire) {
+
+                }
             }
 
         }

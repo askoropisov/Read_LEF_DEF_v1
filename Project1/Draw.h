@@ -30,7 +30,7 @@ void RenderScene() {
 	glViewport(0, 0, w1, h1);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45.0f, w1 / h1, 0.1f, 1000.0f);
+	gluPerspective(45.0f, w1 / h1, 0.1f, 10000000.0f);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
@@ -54,7 +54,7 @@ void RenderScene() {
 	for (auto component : def.components) {								//read component in DEF
 		double x_1 = component->x_position;								//position vertex x1,y1
 		double y_1 = component->y_position;
-		double x_2 = component->y_position;
+		double x_2 = component->x_position;
 		double y_2 = component->y_position;
 		double z = 3;
 		std::string  name_in_Macro = component->name_model_in_LEF;
@@ -65,7 +65,16 @@ void RenderScene() {
 				x_2 += macro_element->size_x;							//position vertex x2,y2
 				y_2 += macro_element->size_y;
 
+				glBegin(GL_LINE_LOOP);												//draw component
+				glColor3f(0, 1, 0);
+				glVertex3f(x_1, y_1, z);
+				glVertex3f(x_2, y_1, z);
+				glVertex3f(x_2, y_2, z);
+				glVertex3f(x_1, y_2, z);
+				glEnd();
+
 				double mass_koord[4];
+
 				
 				for (auto pin : macro_element->pins) {					//open PIN
 					for (auto polygon : pin->polygons) {				//open polygon
@@ -74,8 +83,8 @@ void RenderScene() {
 							mass_koord[i] = position;					//read position
 							++i;
 						}
-						glBegin(GL_POLYGON);							//draw pins (rects or rolygons)
-						glColor3f(0.5, 0.4, 0);
+						glBegin(GL_LINE_LOOP);							//draw pins (rects or rolygons)
+						glColor3f(0, 0, 1);
 						glVertex3f(mass_koord[0] + x_1, mass_koord[1] + y_1, z);		
 						glVertex3f(mass_koord[2] + x_1, mass_koord[1] + y_1, z);
 						glVertex3f(mass_koord[2] + x_1, mass_koord[3] + y_1, z);
@@ -86,14 +95,9 @@ void RenderScene() {
 				
 				break;
 			}
+			
 		}
-		glBegin(GL_QUADS);												//draw component
-		glColor3f(0, 1, 0);
-		glVertex3f(x_1, y_1, z);
-		glVertex3f(x_2, y_1, z);
-		glVertex3f(x_2, y_2, z);
-		glVertex3f(x_1, y_2, z);
-		glEnd();
+		
 	}
     // Конец нашего кода
     glutSwapBuffers();
@@ -106,21 +110,21 @@ void RenderScene() {
 void Read_kb(unsigned char key, int, int)				// zoom and control
 {
 	if (key == 's')
-		vx -= 2.0;
+		vx -= 1000.0;
 	if (key == 'w')
-		vx += 2.0;
+		vx += 1000.0;
 	if (key == 'a')
-		vy -= 2.0;
+		vy -= 1000.0;
 	if (key == 'd')
-		vy += 2.0;
+		vy += 1000.0;
 	if (key == '1')
-		vz -= 2.0;
+		vz -= 1000.0;
 	if (key == '3')
-		vz += 2.0;
+		vz += 1000.0;
 	if (key == '+')
-		Zoom -= 2.0;
+		Zoom -= 10000.0;
 	if (key == '-')
-		Zoom += 10.0;
+		Zoom += 10000.0;
 	if (key == 27)
 		exit(0);
 	glutPostRedisplay();
