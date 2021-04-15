@@ -23,6 +23,10 @@ float vx = 0.0, vy = 0.0, vz = 0.0;
 double Zoom = 100000.0;
 double a, b;
 
+bool key_layer1 = true;
+bool key_layer2 = true;
+bool key_layer3 = true;
+
 
 void RenderScene() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -100,11 +104,15 @@ void RenderScene() {
 		}
 		
 	}
+	if (key_layer1 == true) {
+
+	}
 
 
     // Конец нашего кода
     glutSwapBuffers();
 }
+
 
 
 
@@ -130,6 +138,13 @@ void Read_kb(unsigned char key, int, int)				// zoom and control
 		Zoom -= 10000.0;
 	if (key == '-')
 		Zoom += 10000.0;
+
+	if (key == '1')
+		key_layer1 = false;
+	if (key == '2')
+		key_layer1 = false;
+	if (key == '3')
+		key_layer1 = false;
 	if (key == 27)
 		exit(0);
 	glutPostRedisplay();
