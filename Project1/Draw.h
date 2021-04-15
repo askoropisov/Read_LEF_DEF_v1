@@ -99,6 +99,8 @@ void RenderScene() {
 		}
 		
 	}
+
+
     // Конец нашего кода
     glutSwapBuffers();
 }
@@ -127,7 +129,6 @@ void Read_kb(unsigned char key, int, int)				// zoom and control
 		Zoom -= 10000.0;
 	if (key == '-')
 		Zoom += 10000.0;
-
 	if (key == 27)
 		exit(0);
 	glutPostRedisplay();
