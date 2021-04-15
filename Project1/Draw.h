@@ -14,6 +14,7 @@
 
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(lib, "glut32.lib")
+#pragma comment(lib, "glut64.lib")
 
 
 
