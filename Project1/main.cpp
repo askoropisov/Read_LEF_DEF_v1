@@ -95,9 +95,7 @@ int main(int argc, char* argv[]) {
     };  
 
 
-    //Soukup();
-
-    
+    Soukup();
 
 
 
@@ -150,8 +148,8 @@ bool Soukup() {                    //need assign a function
     bool swapCoord = false; //swap source and target when no path is found
     bool floodLessB = false; //DFS until flooding is needed
 
-    x = 700000;
-    y = 500000;
+    x = 7000;
+    y = 5000;
 
 
      //initializations
@@ -207,17 +205,15 @@ bool Soukup() {                    //need assign a function
 //function definitions
 bool input() {
 
-    int x_source, y_source, x_target, y_target;
-
     for (auto component : def.components) {								//read component in DEF
         int x_1 = component->x_position;								//position vertex x1,y1
         int y_1 = component->y_position;
 
         std::string  name_in_Macro = component->name_model_in_LEF;
-        std::string name_wire, name_wire_target;
+        std::string name_wire;
 
         for (auto elements : ver.elements) {                             //open verilog elements
-            if (elements->name == name_in_Macro)
+            if (elements->name_component_in_def == component->name)         //name verilog element = name component in def
             {
                 double mass_koord[4];
                 coord tempi;
@@ -244,12 +240,11 @@ bool input() {
                                     }
                                     break;                                      //close pin in macro
                                 }
-                                else continue;
                             }
                             break;                                                      //close macro
                         }
                     }
-                    name_wire = pins->name_wire;                                        //save name_wire
+                    //name_wire = pins->name_wire;                                        //save name_wire
                     tempi.x = x_1 + (mass_koord[0] + mass_koord[2]) / 2;                      //x_start
                     tempi.y = y_1 + (mass_koord[1] + mass_koord[3]) / 2;                      //y_start
                     tempi.z = 1;                                                            //z_start
@@ -265,7 +260,7 @@ bool input() {
                     for (auto second_element : ver.elements) {                          //open verilog elements
 
                         double mass_koord[4];
-
+                        coord tempj;
                         for (auto second_pins : second_element->pins) {                   //open pins
                             if (second_pins->using_flag == true) continue;               //checking for repetition
                             if (second_pins->name_wire == name_wire) {                  //
@@ -286,9 +281,9 @@ bool input() {
                                     for (auto MacroPin : LEF_macro->pins) {                             //open pins in macro
                                         if (MacroPin->name == name_pin) {
 
-                                            for (auto polygon : MacroPin->polygons) {				//open polygon
+                                            for (auto second_polygon : MacroPin->polygons) {				//open polygon
                                                 int i = 0;
-                                                for (auto position : polygon->position) {
+                                                for (auto position : second_polygon->position) {
                                                     mass_koord[i] = position;					//read position
                                                     ++i;
                                                 }
@@ -300,10 +295,10 @@ bool input() {
                                     }
                                     break;
                                 }
-                                tempi.x = second_x_1 + (mass_koord[0] + mass_koord[2]) / 2;                      //x_start
-                                tempi.y = second_y_1 + (mass_koord[1] + mass_koord[3]) / 2;                      //y_start
-                                tempi.z = 1;                                                            //z_start
-                                enda.push_back(tempi);                                             //push_back koor-d
+                                tempj.x = second_x_1 + (mass_koord[0] + mass_koord[2]) / 2;                      //x_start
+                                tempj.y = second_y_1 + (mass_koord[1] + mass_koord[3]) / 2;                      //y_start
+                                tempj.z = 1;                                                            //z_start
+                                enda.push_back(tempj);                                             //push_back koor-d
                                 second_pins->using_flag = true;                                     //marker pin
                                 break;
                             } 
