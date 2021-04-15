@@ -19,7 +19,7 @@
 
 double w1 = 800.0, h1 = 800.0;
 float vx = 0.0, vy = 0.0, vz = 0.0;
-double Zoom = 100.0;
+double Zoom = 100000.0;
 double a, b;
 
 
@@ -110,21 +110,24 @@ void RenderScene() {
 void Read_kb(unsigned char key, int, int)				// zoom and control
 {
 	if (key == 's')
-		vx -= 1000.0;
+		b -= 10.0;
 	if (key == 'w')
-		vx += 1000.0;
+		b += 10.0;
 	if (key == 'a')
-		vy -= 1000.0;
+		a -= 10.0;
 	if (key == 'd')
-		vy += 1000.0;
-	if (key == '1')
-		vz -= 1000.0;
-	if (key == '3')
-		vz += 1000.0;
+		a += 10.0;
+	if (key == 'e') {
+		if (Zoom <= 300) Zoom -= 10;
+		Zoom -= 200.0;
+	}
+	if (key == 'q')
+		Zoom += 200.0;
 	if (key == '+')
 		Zoom -= 10000.0;
 	if (key == '-')
 		Zoom += 10000.0;
+
 	if (key == 27)
 		exit(0);
 	glutPostRedisplay();
@@ -133,13 +136,13 @@ void Read_kb(unsigned char key, int, int)				// zoom and control
 void  ReadSpec(int key, int, int)						//
 {
 	if (key == GLUT_KEY_UP)
-		b += 100.0;
-	if (key == GLUT_KEY_DOWN)
-		b -= 100.0;
+		b += 1000.0;
+	if (key == GLUT_KEY_DOWN) 
+		b -= 1000.0;
 	if (key == GLUT_KEY_RIGHT)
-		a += 100.0;
+		a += 1000.0;
 	if (key == GLUT_KEY_LEFT)
-		a -= 100.0;
+		a -= 1000.0;
 	glutPostRedisplay();
 }
 
