@@ -80,6 +80,7 @@ int main(int argc, char* argv[]) {
     std::cout << std::endl <<std::endl<< " DEF file read successfully" << std::endl;
 
 
+
     //Verilog main
 
     if (!ver.Read(verFileName)) {
@@ -96,7 +97,11 @@ int main(int argc, char* argv[]) {
     };  
 
 
-    //Soukup();
+    /*if (!Soukup()) {
+        std::cout << std::endl << std::endl << "_err_ : Trace error!" << std::endl;
+        return EXIT_FAILURE;
+    }
+    std::cout << std::endl << std::endl << " Trace successfully" << std::endl;*/
 
 
 

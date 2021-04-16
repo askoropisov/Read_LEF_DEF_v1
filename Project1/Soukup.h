@@ -12,9 +12,9 @@ int s_value, t_value;
 
 //function declarations
 bool input(); //takes in the input coordinates and validates input
-void printMatrix(vector<vector<int>> m, int x, int y); //print a matrix
+//void printMatrix(vector<vector<int>> m, int x, int y); //print a matrix
 coord traverse(vector <vector<int>>& l, int x, int y, coord s, coord t, bool isSource); //DFS part
-bool flood(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord newSource, coord target, int via, int count0, bool isSource); //BFS part
+bool flood(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord newSource, coord target, int count0, bool isSource); //BFS part
 bool backTracking(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord source, coord target, int via, coord source1); //To generate route
 void backToLife(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y); //Erase flooding after route is complete
 void undoTraversal(vector<vector<int>>& l, int x, int y, coord s, coord t); //remove route of traversal if no path is found
@@ -24,27 +24,30 @@ coord floodLess(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<
 //unsigned  int x, y; //coordinates of grid
 
 
-const int x = def.x_2 - def.x_1;                //size cristall
-const int y = def.y_2 - def.y_1;
-    //initializations
-vector <int> rows(y);
-vector <vector <int>> l1(x, rows); //layer 1
-vector <vector <int>> l2(x, rows); //layer 2
-vector <vector <int>> l3(x, rows); //layer 3
 
+
+
+vector <vector <int>> l1_print; //layer 1 draw
+vector <vector <int>> l2_print; //layer 2 draw
+vector <vector <int>> l3_print; //layer 3 draw
 
 vector <coord>  start;
 vector <coord>  enda;
 
 bool Soukup() {                    //need assign a function
 
-   
 
     int via = 1; //via cost
     bool swapCoord = false; //swap source and target when no path is found
     bool floodLessB = false; //DFS until flooding is needed
 
-
+    int x = def.x_2 - def.x_1;                //size cristall
+    int y = def.y_2 - def.y_1;
+    //initializations
+    vector <int> rows(y);
+    vector <vector <int>> l1(x, rows); //layer 1
+    vector <vector <int>> l2(x, rows); //layer 2
+    vector <vector <int>> l3(x, rows); //layer 3
 
 
     for (int i = 0; i < x; i++) {
@@ -57,6 +60,8 @@ bool Soukup() {                    //need assign a function
     l3 = l1;                                    //3 layer
 
 
+
+
     clock_t time;                               //timer
 
     time = clock();                             //to measure CPU time
@@ -65,21 +70,20 @@ bool Soukup() {                    //need assign a function
         std::cout << std::endl << std::endl << " the coordinates of the points are defined incorrectly" << std::endl;
         return EXIT_FAILURE;
     };
+    cout << endl <<endl<< " The coordinates of the corresponding elements are defined";
 
 
     for (int i = 0; i < start.size(); i++) {
 
         classicalImplementation(l1, l2, l3, x, y, start[i], enda[i], via, swapCoord, floodLessB);       //Soukup 
+        cout << endl << "Trace ", i, "connected";
         route--;
     }
 
     time = clock() - time;                      //to measure CPU time
-    printMatrix(l1, x, y);
-    cout << endl << endl;
-    printMatrix(l2, x, y);
-    cout << endl << endl;
-    printMatrix(l3, x, y);
-    cout << endl << endl;
+    l1_print = l1;                              //for draw layers;
+    l2_print = l2;
+    l3_print = l3;
     cout << "Execution time = " << (double)((double)time / CLOCKS_PER_SEC) << endl; //to measure CPU time
 
     return 0;
@@ -197,15 +201,15 @@ bool input() {
 
     return true;
 }
-
-void printMatrix(vector<vector<int>> m, int x, int y) {
-    for (int i = 0; i < x; i++) {
-        for (int j = 0; j < y; j++) {
-            cout << m[i][j] << "\t";
-        }
-        cout << endl;
-    }
-}
+//
+//void printMatrix(vector<vector<int>> m, int x, int y) {
+//    for (int i = 0; i < x; i++) {
+//        for (int j = 0; j < y; j++) {
+//            cout << m[i][j] << "\t";
+//        }
+//        cout << endl;
+//    }
+//}
 
 coord traverse(vector <vector<int>>& l, int x, int y, coord s, coord t, bool isSource) {
     //vertical
@@ -341,7 +345,7 @@ bool flood(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>
     imin = imax = newSource.x;
     jmin = jmax = newSource.y;
 
-    while (count < x * y * via) {
+    while (count < x * y) {
         //                for (int i= imin; i<= imax; i++){
         //                    for (int j = jmin; j <= jmax; j++){
 
@@ -486,7 +490,7 @@ bool backTracking(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vecto
     int i = target.x;
     int j = target.y;
     int z = target.z;
-    while ((i != source.x) | (j != source.y) | (z != source.z)) {
+    while ((i != source.x) || (j != source.y) || (z != source.z)) {
         //horizontal
         if (z == 1) {
             if ((j - 1 >= 0) && (l1[i][j - 1] == (count - 1)) && (l1[i][j - 1] >= 0)) { //checking if next cell in route is left cell
@@ -642,13 +646,13 @@ void classicalImplementation(vector<vector<int>>& l1, vector<vector<int>>& l2, v
 
         //if target is reached
         if ((newSource.x == target.x) && (newSource.y == target.y) && (newSource.z == target.z)) {
-            //printMatrix(l1, x, y);
+    /*        printMatrix(l1, x, y);
             cout << endl << endl;
-            //printMatrix(l2, x, y);
+            printMatrix(l2, x, y);
             cout << endl << endl;
-            //printMatrix(l3, x, y);
+            printMatrix(l3, x, y);
             cout << endl << endl;
-            // cout << "Cost = " << (cells + vias * via) << endl;
+             cout << "Cost = " << (cells + vias * via) << endl;*/
             return;
         }
         else {
@@ -674,14 +678,14 @@ void classicalImplementation(vector<vector<int>>& l1, vector<vector<int>>& l2, v
 
         if (backTracking(l1, l2, l3, x, y, newSource, target, via, source)) { //get route
             backToLife(l1, l2, l3, x, y); //empty flooded, non-routed cells
-            cout << "BACKTRACKING" << endl;
-            // printMatrix(l1, x, y);
+          /*  cout << "BACKTRACKING" << endl;
+             printMatrix(l1, x, y);
             cout << endl << endl;
-            //printMatrix(l2, x, y);
+            printMatrix(l2, x, y);
             cout << endl << endl;
-            //printMatrix(l3, x, y);
+            printMatrix(l3, x, y);
             cout << endl << endl;
-            //cout << "Cost = " << (cells + vias * via) << endl;
+            cout << "Cost = " << (cells + vias * via) << endl;*/
             swap = 0; //set swap to 0 (aka do not swap) because path is found
         }
         else {
@@ -716,13 +720,13 @@ void classicalImplementation(vector<vector<int>>& l1, vector<vector<int>>& l2, v
             target = temp;
             if (swap == 0) { //if no more swaps, print grids anyway
                 cout << "No Path available" << endl;
-                route++;
-                printMatrix(l1, x, y);
-                cout << endl << endl;
-                printMatrix(l2, x, y);
-                cout << endl << endl;
-                printMatrix(l3, x, y);
-                cout << endl << endl;
+                //route++;
+                //printMatrix(l1, x, y);
+                //cout << endl << endl;
+                //printMatrix(l2, x, y);
+                //cout << endl << endl;
+                //printMatrix(l3, x, y);
+                //cout << endl << endl;
             }
         }
     }

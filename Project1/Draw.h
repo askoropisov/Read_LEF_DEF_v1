@@ -28,6 +28,8 @@ bool key_layer2 = true;
 bool key_layer3 = true;
 
 extern vector <vector <int>> l1,l2,l3;
+int xd = def.x_2 - def.x_1;
+int yd = def.y_2 - def.y_1;
 
 
 void RenderScene() {
@@ -107,6 +109,63 @@ void RenderScene() {
 		
 	}
 	if (key_layer1 == true) {
+		for (int i = 0; i < xd; i++) {
+			for (int j = 0; j < yd; j++) {
+				switch (l1_print[i][j])
+				{
+				case 0:
+					break;
+				default:
+					glBegin(GL_QUADS);
+					glColor3f(0.4, 0.5, 0);
+					glVertex3f(i - 1, j - 1, 3);
+					glVertex3f(i + 1, j - 1, 3);
+					glVertex3f(i + 1, j + 1, 3);
+					glVertex3f(i - 1, j + 1, 3);
+					break;
+				}
+			}
+		}
+
+	}
+	if (key_layer2 == true) {
+		for (int i = 0; i < xd; i++) {
+			for (int j = 0; j < yd; j++) {
+				switch (l2_print[i][j])
+				{
+				case 0:
+					break;
+				default:
+					glBegin(GL_QUADS);
+					glColor3f(0.4, 0.5, 0);
+					glVertex3f(i - 1, j - 1, 3);
+					glVertex3f(i + 1, j - 1, 3);
+					glVertex3f(i + 1, j + 1, 3);
+					glVertex3f(i - 1, j + 1, 3);
+					break;
+				}
+			}
+		}
+
+	}
+	if (key_layer3 == true) {
+		for (int i = 0; i < xd; i++) {
+			for (int j = 0; j < yd; j++) {
+				switch (l3_print[i][j])
+				{
+				case 0:
+					break;
+				default:
+					glBegin(GL_QUADS);
+					glColor3f(0.4, 0.5, 0);
+					glVertex3f(i - 1, j - 1, 3);
+					glVertex3f(i + 1, j - 1, 3);
+					glVertex3f(i + 1, j + 1, 3);
+					glVertex3f(i - 1, j + 1, 3);
+					break;
+				}
+			}
+		}
 
 	}
 
