@@ -32,9 +32,6 @@ std::string lefFileName = "D_CELLS_test.lef";
 std::string defFileName = "mult24.def";
 std::string verFileName = "mult24.v";
 
-//LEFFile lef;
-//DEFFile def;
-//VERFile ver;
 
 //исправить без глобальных переменных
 bool check_compliance(){                                        //LEF and DEF file compatibility check
@@ -97,11 +94,11 @@ int main(int argc, char* argv[]) {
     };  
 
 
-    /*if (!Soukup()) {
-        std::cout << std::endl << std::endl << "_err_ : Trace error!" << std::endl;
-        return EXIT_FAILURE;
-    }
-    std::cout << std::endl << std::endl << " Trace successfully" << std::endl;*/
+    //if (!Soukup()) {
+    //    std::cout << std::endl << std::endl << "_err_ : Trace error!" << std::endl;
+    //    return EXIT_FAILURE;
+    //}
+    //std::cout << std::endl << std::endl << " Trace successfully" << std::endl;
 
 
 

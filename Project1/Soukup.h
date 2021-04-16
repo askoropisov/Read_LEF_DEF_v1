@@ -6,7 +6,7 @@ struct coord { int x; int y; int z; };
 
 //global variables
 int cells = 0;
-int vias;
+
 int route = -10;
 int s_value, t_value;
 
@@ -15,10 +15,10 @@ bool input(); //takes in the input coordinates and validates input
 //void printMatrix(vector<vector<int>> m, int x, int y); //print a matrix
 coord traverse(vector <vector<int>>& l, int x, int y, coord s, coord t, bool isSource); //DFS part
 bool flood(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord newSource, coord target, int count0, bool isSource); //BFS part
-bool backTracking(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord source, coord target, int via, coord source1); //To generate route
+bool backTracking(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord source, coord target, coord source1); //To generate route
 void backToLife(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y); //Erase flooding after route is complete
 void undoTraversal(vector<vector<int>>& l, int x, int y, coord s, coord t); //remove route of traversal if no path is found
-void classicalImplementation(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord source, coord target, int via, bool swapCoord, bool floodLessB); //full implementation
+void classicalImplementation(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord source, coord target, bool swapCoord, bool floodLessB); //full implementation
 coord floodLess(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord newSource, coord target); //DFS until flooding is needed
 
 //unsigned  int x, y; //coordinates of grid
@@ -37,7 +37,6 @@ vector <coord>  enda;
 bool Soukup() {                    //need assign a function
 
 
-    int via = 1; //via cost
     bool swapCoord = false; //swap source and target when no path is found
     bool floodLessB = false; //DFS until flooding is needed
 
@@ -75,7 +74,7 @@ bool Soukup() {                    //need assign a function
 
     for (int i = 0; i < start.size(); i++) {
 
-        classicalImplementation(l1, l2, l3, x, y, start[i], enda[i], via, swapCoord, floodLessB);       //Soukup 
+        classicalImplementation(l1, l2, l3, x, y, start[i], enda[i], swapCoord, floodLessB);       //Soukup 
         cout << endl << "Trace ", i, "connected";
         route--;
     }
@@ -309,7 +308,7 @@ coord traverse(vector <vector<int>>& l, int x, int y, coord s, coord t, bool isS
     return newSource;
 }
 
-bool flood(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord newSource, coord target, int via, int count0, bool isSource) {
+bool flood(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord newSource, coord target, int count0, bool isSource) {
     int count = count0; //initial count
     switch (newSource.z) {
     case (1): {
@@ -355,11 +354,11 @@ bool flood(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>
                 if (l1[i][j] == count) { //check if cell in l1 == count
 
                     if ((i == target.x) && (j == target.y) && (target.z == 2)) { //check is cell above is target
-                        l2[i][j] = count + via;
+                        l2[i][j] = count;
                         return true; //path found
                     }
                     if (l2[i][j] == 0) { //check if cell above is empty
-                        l2[i][j] = count + via;
+                        l2[i][j] = count;
                     }
 
                     if ((i == target.x) && ((j + 1) == target.y) && (target.z == 1)) { //check if cell to the right is target
@@ -388,20 +387,20 @@ bool flood(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>
                 if (l2[i][j] == count) {  //check if cell in l2 == count
 
                     if ((j == target.y) && (i == target.x) && (target.z == 1)) { //check if cell below is target
-                        l1[i][j] = count + via;
+                        l1[i][j] = count;
                         return true; //path found
                     }
                     if (l1[i][j] == 0) { //check if cell below is empty
-                        l1[i][j] = count + via;
+                        l1[i][j] = count;
 
                     }
 
                     if ((j == target.y) && (i == target.x) && (target.z == 3)) { //check if cell above is target
-                        l3[i][j] = count + via;
+                        l3[i][j] = count;
                         return true; //path found
                     }
                     if (l3[i][j] == 0) { //check if cell above is empty
-                        l3[i][j] = count + via;
+                        l3[i][j] = count;
                     }
 
                     if ((j == target.y) && ((i + 1) == target.x) && (target.z == 2)) { //check if cell upwards (in same metal layer) is target
@@ -429,11 +428,11 @@ bool flood(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>
                 if (l3[i][j] == count) { //check if cell in l3 == count
 
                     if ((i == target.x) && (j == target.y) && (target.z == 2)) { //check if cell below is target
-                        l2[i][j] = count + via;
+                        l2[i][j] = count;
                         return true; //path found
                     }
                     if (l2[i][j] == 0) { //check if cell below is empty
-                        l2[i][j] = count + via;
+                        l2[i][j] = count;
                     }
 
                     if ((i == target.x) && ((j + 1) == target.y) && (target.z == 3)) { //check if cell to the right is target
@@ -465,7 +464,7 @@ bool flood(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>
     return false; //path not found
 }
 
-bool backTracking(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord source, coord target, int via, coord source1) {
+bool backTracking(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord source, coord target, coord source1) {
     int count = 0; //count we're looking for
     switch (target.z) {
     case(1): {
@@ -503,14 +502,12 @@ bool backTracking(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vecto
                 j++;
                 count--;
             }
-            else if (l2[i][j] == (count - via) && (l2[i][j] >= 0)) { //checking if next cell in route is cell above
+            else if (l2[i][j] == (count) && (l2[i][j] >= 0)) { //checking if next cell in route is cell above
                 z = 2;
-                count -= via;
                 l2[i][j] = route;
                 l1[i][j] = route;
                 //                l2[i][j] = v12;
                 //                l1[i][j] = v12;
-                vias++;
             }
         }
         else if (z == 3) {
@@ -524,14 +521,12 @@ bool backTracking(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vecto
                 j++;
                 count--;
             }
-            else if (l2[i][j] == (count - via) && (l2[i][j] >= 0)) { //checking if next cell in route is cell below
+            else if (l2[i][j] == (count) && (l2[i][j] >= 0)) { //checking if next cell in route is cell below
                 z = 2;
-                count -= via;
                 //                l2[i][j] = v23;
                 //                l3[i][j] = v23;
                 l2[i][j] = route;
                 l3[i][j] = route;
-                vias++;
             }
         }
         //vertical
@@ -546,23 +541,19 @@ bool backTracking(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vecto
                 i++;
                 count--;
             }
-            else if (l3[i][j] == (count - via) && (l3[i][j] >= 0)) { //checking if next cell in route is cell above
+            else if (l3[i][j] == (count) && (l3[i][j] >= 0)) { //checking if next cell in route is cell above
                 z = 3;
-                count -= via;
                 //                l3[i][j] = v23;
                 //                l2[i][j] = v23;
                 l3[i][j] = route;
                 l2[i][j] = route;
-                vias++;
             }
-            else if (l1[i][j] == (count - via) && (l1[i][j] >= 0)) { //checking if next cell in route is cell below
+            else if (l1[i][j] == (count) && (l1[i][j] >= 0)) { //checking if next cell in route is cell below
 //                l1[i][j] = v12;
 //                l2[i][j] = v12;
                 l1[i][j] = route;
                 l2[i][j] = route;
                 z = 1;
-                count -= via;
-                vias++;
             }
         }
     }
@@ -591,10 +582,9 @@ void backToLife(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<
     }
 }
 
-void classicalImplementation(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord source, coord target, int via, bool swapCoord, bool floodLessB) {
+void classicalImplementation(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord source, coord target, bool swapCoord, bool floodLessB) {
     coord newSource;
     cells = 0; //# of cells
-    vias = 0; //# of vias
     bool isSource = true; //source is same as newSource
     int swap;
     if (swapCoord) //if target and source will be swapped if no source
@@ -660,7 +650,7 @@ void classicalImplementation(vector<vector<int>>& l1, vector<vector<int>>& l2, v
             if ((source.x != newSource.x) && (source.y != newSource.y) && (source.z != newSource.z))
                 isSource = false;
         }
-        flood(l1, l2, l3, x, y, newSource, target, via, count0, isSource);
+        flood(l1, l2, l3, x, y, newSource, target, count0, isSource);
 
 
         //        ///////////////////
@@ -676,7 +666,7 @@ void classicalImplementation(vector<vector<int>>& l1, vector<vector<int>>& l2, v
         //        //remove before submission
 
 
-        if (backTracking(l1, l2, l3, x, y, newSource, target, via, source)) { //get route
+        if (backTracking(l1, l2, l3, x, y, newSource, target, source)) { //get route
             backToLife(l1, l2, l3, x, y); //empty flooded, non-routed cells
           /*  cout << "BACKTRACKING" << endl;
              printMatrix(l1, x, y);
@@ -792,8 +782,7 @@ coord floodLess(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<
         if ((newSource1.x == newSource2.x) && (newSource1.y == newSource2.y) && (newSource1.z == newSource2.z)) { //no traverse
             if ((newSource1.x == target.x) && (newSource1.y == target.y) && (newSource1.z == target.z)) //target reached
                 return target;
-            if (newSourceBuffer.z != newSource1.z) //if no traverse, reduce vias
-                vias--;
+            //if (newSourceBuffer.z != newSource1.z) //if no traverse, reduce vias
             return newSourceBuffer; //return saved newSource1 value
         }
         else {
@@ -806,19 +795,15 @@ coord floodLess(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<
         else {
             if (newSource2.z < target.z) { //z of target is greater
                 newSource2.z = ((newSource2.z) % 3) + 1; //increment z sent to traverse
-                vias++;
             }
             else if (newSource2.z > target.z) { //z of target is less
                 newSource2.z = ((newSource2.z - 1) % 3); //decrement z sent to traverse
-                vias++;
             }
             else if ((newSource2.z == target.z) && ((target.z == 1) || (target.z == 3)) && (newSource2.x != target.x)) { //horizontal layer and there is a difference vertically
                 newSource2.z = 2;
-                vias++;
             }
             else if ((newSource2.z == target.z) && (target.z == 2) && (newSource2.y != target.y)) { //vertical layer and their is a difference horizontally
                 newSource2.z = ((newSource2.z) % 3) + 1;
-                vias++;
             }
         }
         newSourceBuffer = newSource1; //update buffer
