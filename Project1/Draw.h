@@ -23,9 +23,9 @@ float vx = 0.0, vy = 0.0, vz = 0.0;
 double Zoom = 100000.0;
 double a, b;
 
-bool key_layer1 = true;
-bool key_layer2 = true;
-bool key_layer3 = true;
+int key_layer1 = 0;
+int key_layer2 = 0;
+int key_layer3 = 0;
 
 extern vector <vector <int>> l1,l2,l3;
 int xd = def.x_2 - def.x_1;
@@ -108,7 +108,7 @@ void RenderScene() {
 		}
 		
 	}
-	if (key_layer1 == true) {
+	if (key_layer1 % 2 == 0) {															//draw layer 1
 		for (int i = 0; i < xd; i++) {
 			for (int j = 0; j < yd; j++) {
 				switch (l1_print[i][j])
@@ -118,17 +118,17 @@ void RenderScene() {
 				default:
 					glBegin(GL_QUADS);
 					glColor3f(0.4, 0.5, 0);
-					glVertex3f(i - 1, j - 1, 3);
-					glVertex3f(i + 1, j - 1, 3);
-					glVertex3f(i + 1, j + 1, 3);
-					glVertex3f(i - 1, j + 1, 3);
+					glVertex3f(i - 1, j - 1, 4);
+					glVertex3f(i + 1, j - 1, 4);
+					glVertex3f(i + 1, j + 1, 4);
+					glVertex3f(i - 1, j + 1, 4);
 					break;
 				}
 			}
 		}
 
 	}
-	if (key_layer2 == true) {
+	if (key_layer2 % 2 == 0) {															//draw layer 2
 		for (int i = 0; i < xd; i++) {
 			for (int j = 0; j < yd; j++) {
 				switch (l2_print[i][j])
@@ -137,18 +137,18 @@ void RenderScene() {
 					break;
 				default:
 					glBegin(GL_QUADS);
-					glColor3f(0.4, 0.5, 0);
-					glVertex3f(i - 1, j - 1, 3);
-					glVertex3f(i + 1, j - 1, 3);
-					glVertex3f(i + 1, j + 1, 3);
-					glVertex3f(i - 1, j + 1, 3);
+					glColor3f(1, 1, 1);
+					glVertex3f(i - 1, j - 1, 5);
+					glVertex3f(i + 1, j - 1, 5);
+					glVertex3f(i + 1, j + 1, 5);
+					glVertex3f(i - 1, j + 1, 5);
 					break;
 				}
 			}
 		}
 
 	}
-	if (key_layer3 == true) {
+	if (key_layer3 % 2 == 0) {															//draw layer 3
 		for (int i = 0; i < xd; i++) {
 			for (int j = 0; j < yd; j++) {
 				switch (l3_print[i][j])
@@ -158,10 +158,10 @@ void RenderScene() {
 				default:
 					glBegin(GL_QUADS);
 					glColor3f(0.4, 0.5, 0);
-					glVertex3f(i - 1, j - 1, 3);
-					glVertex3f(i + 1, j - 1, 3);
-					glVertex3f(i + 1, j + 1, 3);
-					glVertex3f(i - 1, j + 1, 3);
+					glVertex3f(i - 1, j - 1, 6);
+					glVertex3f(i + 1, j - 1, 6);
+					glVertex3f(i + 1, j + 1, 6);
+					glVertex3f(i - 1, j + 1, 6);
 					break;
 				}
 			}
@@ -197,13 +197,13 @@ void Read_kb(unsigned char key, int, int)				// zoom and control
 		Zoom -= 10000.0;
 	if (key == '-')
 		Zoom += 10000.0;
-
+	//Layer draw buttons
 	if (key == '1')
-		key_layer1 = false;
+		key_layer1 +=1;
 	if (key == '2')
-		key_layer1 = false;
+		key_layer1 +=1;
 	if (key == '3')
-		key_layer1 = false;
+		key_layer1 +=1;
 	if (key == 27)
 		exit(0);
 	glutPostRedisplay();
