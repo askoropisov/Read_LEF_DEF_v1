@@ -21,13 +21,17 @@ void undoTraversal(vector<vector<int>>& l, int x, int y, coord s, coord t); //re
 void classicalImplementation(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord source, coord target, int via, bool swapCoord, bool floodLessB); //full implementation
 coord floodLess(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord newSource, coord target); //DFS until flooding is needed
 
-unsigned  int x, y; //coordinates of grid
+//unsigned  int x, y; //coordinates of grid
 
+
+const int x = def.x_2 - def.x_1;                //size cristall
+const int y = def.y_2 - def.y_1;
     //initializations
 vector <int> rows(y);
 vector <vector <int>> l1(x, rows); //layer 1
 vector <vector <int>> l2(x, rows); //layer 2
 vector <vector <int>> l3(x, rows); //layer 3
+
 
 vector <coord>  start;
 vector <coord>  enda;
@@ -40,8 +44,7 @@ bool Soukup() {                    //need assign a function
     bool swapCoord = false; //swap source and target when no path is found
     bool floodLessB = false; //DFS until flooding is needed
 
-    x = def.x_2 - def.x_1;                //size cristall
-    y = def.y_2 - def.y_1;
+
 
 
     for (int i = 0; i < x; i++) {

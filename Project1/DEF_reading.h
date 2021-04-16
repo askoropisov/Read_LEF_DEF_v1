@@ -57,6 +57,8 @@ bool DEFFile::Read(std::string filename) {
         if (token == "DIEAREA") {
                 defFile >> trash>> x_1 >> y_1>>trash;               // read koor-d cristall
                 defFile >> trash>> x_2 >> y_2>>trash;
+                x_1 = x_1 / 100; y_1 = y_1 / 100;
+                x_2 = x_2 / 100; y_2 = y_2 / 100;
             continue;
         }
         if (token == "ROW") {
@@ -198,8 +200,10 @@ bool DEFFile::ReadComponents(std::ifstream& defFile, std::string& name) {       
     defFile >> p_com->name_model_in_LEF;                                                //name model in LEF file
     name_Component.push_back(p_com->name_model_in_LEF);
     defFile >> trash >> trash >> trash;
-    defFile >> p_com->x_position;                                                       //location component
+    defFile >> p_com->x_position;                                                           //location component
+    p_com->x_position = p_com->x_position / 100;
     defFile >> p_com->y_position;
+    p_com->y_position = p_com->y_position / 100;
     defFile >> trash;
     defFile >> token;                                                                   //orintation
     if (token == "N") {
