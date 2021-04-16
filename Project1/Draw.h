@@ -27,6 +27,8 @@ bool key_layer1 = true;
 bool key_layer2 = true;
 bool key_layer3 = true;
 
+extern vector <vector <int>> l1,l2,l3;
+
 
 void RenderScene() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -78,7 +80,7 @@ void RenderScene() {
 				glVertex3f(x_1, y_2, z);
 				glEnd();
 
-				double mass_koord[4];
+				double mass_koord[4] = { 0,0,0,0 };
 
 				
 				for (auto pin : macro_element->pins) {					//open PIN
