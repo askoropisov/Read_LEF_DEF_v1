@@ -200,10 +200,10 @@ bool DEFFile::ReadComponents(std::ifstream& defFile, std::string& name) {       
     defFile >> p_com->name_model_in_LEF;                                                //name model in LEF file
     name_Component.push_back(p_com->name_model_in_LEF);
     defFile >> trash >> trash >> trash;
-    defFile >> p_com->x_position;                                                           //location component
-    p_com->x_position = p_com->x_position / 100;
+    defFile >> p_com->x_position;                                                          //location component
+    p_com->x_position = p_com->x_position / 100;                                        //to match the dimensions
     defFile >> p_com->y_position;
-    p_com->y_position = p_com->y_position / 100;
+    p_com->y_position = p_com->y_position / 100;                                        //to match the dimensions
     defFile >> trash;
     defFile >> token;                                                                   //orintation
     if (token == "N") {

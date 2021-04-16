@@ -208,7 +208,9 @@ bool Pin::ReadPolygon(std::ifstream& lefFile, std::string) {        //read point
                     polygons.push_back(p_pol);                      //add polygon in PIN
                     break;
                 }
-                p_pol->position.push_back(std::stod(token));        //add position piont in POLYGON
+                //*10 to match the dimensions
+                p_pol->position.push_back(std::stod(token)*10);        //add position piont in POLYGON
+                
             }
         }
         if (token == "POLYGON") {
@@ -225,7 +227,8 @@ bool Pin::ReadPolygon(std::ifstream& lefFile, std::string) {        //read point
                     iss.clear();
                     iss.str(line);
                 }
-                p_pol->position.push_back(std::stod(token));        //add position piont in POLYGON
+                //*10 to match the dimensions
+                p_pol->position.push_back(std::stod(token)*10);        //add position piont in POLYGON
             }
         }
     }
@@ -431,6 +434,8 @@ bool LEFFile::ReadMacro(std::ifstream& lefFile, std::string& name) {            
 
         if (token == "SIZE") {
             iss >> p_mac->size_x >> token >> p_mac->size_y;
+            p_mac->size_x = p_mac->size_x * 10;                                             //to match the dimensions
+            p_mac->size_y = p_mac->size_y * 10;
             continue;
         }
 
