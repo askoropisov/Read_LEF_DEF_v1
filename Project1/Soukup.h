@@ -482,7 +482,7 @@ bool backTracking(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vecto
     int i = target.x;
     int j = target.y;
     int z = target.z;
-    while (i != source.x | j != source.y | z != source.z) {
+    while ((i != source.x) | (j != source.y) | (z != source.z)) {
         //horizontal
         if (z == 1) {
             if ((j - 1 >= 0) && (l1[i][j - 1] == (count - 1)) && (l1[i][j - 1] >= 0)) { //checking if next cell in route is left cell

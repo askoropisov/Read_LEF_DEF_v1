@@ -128,10 +128,8 @@ void Read_kb(unsigned char key, int, int)				// zoom and control
 		a -= 10.0;
 	if (key == 'd')
 		a += 10.0;
-	if (key == 'e') {
-		if (Zoom <= 300) Zoom -= 10;
+	if (key == 'e')
 		Zoom -= 200.0;
-	}
 	if (key == 'q')
 		Zoom += 200.0;
 	if (key == '+')
