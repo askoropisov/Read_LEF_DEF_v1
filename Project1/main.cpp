@@ -93,7 +93,7 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     };  
 
-
+    Soukup();
     //if (!Soukup()) {
     //    std::cout << std::endl << std::endl << "_err_ : Trace error!" << std::endl;
     //    return EXIT_FAILURE;

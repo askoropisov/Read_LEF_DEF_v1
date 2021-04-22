@@ -1,108 +1,164 @@
+#include <fstream>
+#include <math.h>
+#include <stack> 
+#include <queue>
+#include <vector>
+#include <ctime>
+
 
 using namespace std;
+int size_k = 0;
+int n = 1, count_barrier, bx, by, count_trace, ist_x, ist_y, target_x, target_Y;
+bool Lblock[10000000], Sblock[10000000];
+int Lpath[10000000], Spath[10000000],
+dx[4] = { -1,0,1,0 }, dy[4] = { 0,-1,0,1 };
+bool visit[10000000];
+vector<int> startX_mass;
+vector<int> startY_mass;
+vector<int> target_X_mass;
+vector<int> target_Y_mass;
 
-//structs
-struct coord { int x; int y; int z; };
+int super_id;
 
-//global variables
-int cells = 0;
+int newDRP[100][100];
+char Lboard[10000][10000], Sboard[10000][10000];
 
-int route = -10;
-int s_value, t_value;
-
-//function declarations
-bool input(); //takes in the input coordinates and validates input
-//void printMatrix(vector<vector<int>> m, int x, int y); //print a matrix
-coord traverse(vector <vector<int>>& l, int x, int y, coord s, coord t, bool isSource); //DFS part
-bool flood(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord newSource, coord target, int count0, bool isSource); //BFS part
-bool backTracking(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord source, coord target, coord source1); //To generate route
-void backToLife(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y); //Erase flooding after route is complete
-void undoTraversal(vector<vector<int>>& l, int x, int y, coord s, coord t); //remove route of traversal if no path is found
-void classicalImplementation(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord source, coord target, bool swapCoord, bool floodLessB); //full implementation
-coord floodLess(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord newSource, coord target); //DFS until flooding is needed
-
-//unsigned  int x, y; //coordinates of grid
+void print_termenal_and_barrier();
+void print_DRP();
+void Print_newDRP(char Sboard[10000][10000]);
 
 
-
-
-
-vector <vector <int>> l1_print; //layer 1 draw
-vector <vector <int>> l2_print; //layer 2 draw
-vector <vector <int>> l3_print; //layer 3 draw
-
-vector <coord>  start;
-vector <coord>  enda;
-
-bool Soukup() {                    //need assign a function
-
-
-    bool swapCoord = false; //swap source and target when no path is found
-    bool floodLessB = false; //DFS until flooding is needed
-
-    int x = def.x_2 - def.x_1;                //size cristall
-    int y = def.y_2 - def.y_1;
-    //initializations
-    vector <int> rows(y);
-    vector <vector <int>> l1(x, rows); //layer 1
-    vector <vector <int>> l2(x, rows); //layer 2
-    vector <vector <int>> l3(x, rows); //layer 3
-
-
-    for (int i = 0; i < x; i++) {
-        for (int j = 0; j < y; j++) {
-            l1[i][j] = 0;                       //1 layer
-        }
-    }
-
-    l2 = l1;                                    //2 layer
-    l3 = l1;                                    //3 layer
-
-
-
-
-    clock_t time;                               //timer
-
-    time = clock();                             //to measure CPU time
-    if (!input()) {                               //read and find start and target points
-
-        std::cout << std::endl << std::endl << " the coordinates of the points are defined incorrectly" << std::endl;
-        return EXIT_FAILURE;
-    };
-    cout << endl <<endl<< " The coordinates of the corresponding elements are defined";
-
-
-    for (int i = 0; i < start.size(); i++) {
-
-        classicalImplementation(l1, l2, l3, x, y, start[i], enda[i], swapCoord, floodLessB);       //Soukup 
-        cout << endl << "Trace ", i, "connected";
-        route--;
-    }
-
-    time = clock() - time;                      //to measure CPU time
-    l1_print = l1;                              //for draw layers;
-    l2_print = l2;
-    l3_print = l3;
-    cout << "Execution time = " << (double)((double)time / CLOCKS_PER_SEC) << endl; //to measure CPU time
-
-    return 0;
+int TO_TARGET(int curr, int target)                                                             //расстояние до приемника
+{
+    int Manh_dist;
+    int tx = target / n, ty = target % n, cx = curr / n, cy = curr % n;                         //снова определяем координаты Х и У приемника и источника
+    Manh_dist = abs(tx - cx) + abs(ty - cy);
+    return Manh_dist;                                                                             //находим манхеттоновское расстояние
 }
 
-//function definitions
-bool input() {
+int DIRECTION(int next, bool visit[], int target)                                                    //направление
+{
+    int Manh_dist = INT_MAX;
+    int tx = target / n, ty = target % n, nx = next / n, ny = next % n;                              //снова определяем координаты Х и У приемника и источника
 
+    for (int i = 0; i < 4; i++)
+    {
+        int x = nx + dx[i], y = ny + dy[i];                                                             //хз
+        int id = x * n + y;
+        if ((x >= 0 && x < n && y >= 0 && y < n) && visit[id] == false && Sblock[id] == false)          //определяем наименьшее расстояние между источником и приемником в зависимости от выбора направления ???
+        {
+            if (Manh_dist > abs(tx - x) + abs(ty - y))
+            {
+                Manh_dist = abs(tx - x) + abs(ty - y);
+                super_id = id;
+            }
+        }
+    }
+    return Manh_dist;                                                                                         //находим направление, начиная с которого получим наименьшеее расстояние ??
+}
+
+int NGHBR_IN_DIR(int curr, bool visit[], int target_func)                                   //проверка на смену направления????
+{
+    int x = curr / n, y = curr % n;                                                 //
+    bool flag = true;
+    int id;
+
+    if (DIRECTION(curr, visit, target_func) <= TO_TARGET(curr, target_func))
+    {
+        flag = false;
+        id = super_id;
+    }
+    return flag == true ? -1 : id;
+}
+
+bool SoukupAlgo(int x_1, int y_1, int x_2, int y_2)
+{
+    
+    memset(visit, false, (n * n) + 1);                              //заполняем все 0
+
+    int start_func = x_1 * n + y_1, target_func = x_2 * n + y_2;                       //
+
+    stack<int>FILO_stack;                                                //FILO
+    queue<int>LIFO_queue;                                                //LIFO   (приоритетная очередь)           
+
+    FILO_stack.push(start_func);                                                //добавляем элемент в очередь
+    Spath[start_func] = -1;
+    visit[start_func] = true;
+
+    while (!FILO_stack.empty())                             //пока в очереди есть эл-ты    
+    {
+        int first_element = FILO_stack.top();              //первый элемент в очереди
+
+        if (first_element == target_func)
+        {
+            return true;
+        }
+
+        if (DIRECTION(first_element, visit, target_func) <= TO_TARGET(first_element, target_func))      //определяем расстояние от каждого источника до его приямника и сравниваем их
+        {
+            int id = super_id;
+
+            FILO_stack.push(id);                             //добавляем элемент в очередь
+            visit[id] = true;
+            Spath[id] = first_element;
+            if (id == target_func)
+            {
+                return true;
+            }
+
+            while (NGHBR_IN_DIR(id, visit, target_func) >= 0)               //если направление не меняется, движемся по нему же пока не достигнем приемника
+            {
+                int new_id = NGHBR_IN_DIR(id, visit, target_func);
+                //cout<<"in FILO_stack "<<new_id<<endl;
+                FILO_stack.push(new_id);                                     //добавляем элемент в очередь
+                visit[new_id] = true;
+                Spath[new_id] = id;
+                if (new_id == target_func)
+                {
+                    return true;
+                }
+                id = new_id;
+            }
+        }
+        while (!FILO_stack.empty())                                          //пока есть элементы в очереди
+        {
+            first_element = FILO_stack.top();                                          //обращаемся к первому элементу в стеке
+            int tx = first_element / n, ty = first_element % n;                             //определяем коор-ты точки в данный момент 
+            for (int i = 0; i < 4; i++)
+            {
+                int x = tx + dx[i], y = ty + dy[i];
+                int id = x * n + y;
+                if ((x >= 0 && x < n && y >= 0 && y < n) && visit[id] == false && Sblock[id] == false)                  //определяем порядок построения трассировки
+                {
+                    //cout<<"in LIFO_queue "<<id<<endl;
+                    LIFO_queue.push(id);                                     //добавить элемент в очередь
+                    visit[id] = true;
+                    Spath[id] = first_element;
+                }
+            }
+            FILO_stack.pop();                                        //удаляем первый элемент из очереди
+        }
+        while (!LIFO_queue.empty())                                  //если в очереди есть элементы                              
+        {
+            FILO_stack.push(LIFO_queue.front());                          //добавляем в FILO_stack первый элемент из LIFO_queue
+            LIFO_queue.pop();                                        //удаляем первый элемент из очереди
+        }
+    }
+    return false;
+}
+
+bool input() {
     for (auto component : def.components) {								//read component in DEF
         int x_1 = component->x_position;								//position vertex x1,y1
         int y_1 = component->y_position;
 
         std::string  name_in_Macro = component->name_model_in_LEF;
         std::string name_wire;
-
         for (auto elements : ver.elements) {                             //open verilog elements
             if (elements->name_component_in_def == component->name)         //name verilog element = name component in def
             {
                 double mass_koord[4];
-                coord tempi;
+                //coord tempi;
                 for (auto pins : elements->pins) {                           //open pins
                     if (pins->using_flag == true)  continue;                    //checking for repetition
                     name_wire = pins->name_wire;
@@ -130,11 +186,12 @@ bool input() {
                             break;                                                      //close macro
                         }
                     }
-                    //name_wire = pins->name_wire;                                        //save name_wire
-                    tempi.x = x_1 + (mass_koord[0] + mass_koord[2]) / 2;                      //x_start
-                    tempi.y = y_1 + (mass_koord[1] + mass_koord[3]) / 2;                      //y_start
-                    tempi.z = 1;                                                            //z_start
-                    start.push_back(tempi);                                             //push_back koor-d
+                    //name_wire = pins->name_wire;      
+                    //save name_wire
+                    startX_mass.push_back (x_1 + (mass_koord[0] + mass_koord[2]) / 2);                      //x_start
+                    startY_mass.push_back (y_1 + (mass_koord[1] + mass_koord[3]) / 2);                      //y_start
+                    //source.z = 1;                                                            //z_start
+                    //start.push_back(tempi);                                             //push_back koor-d
                     pins->using_flag = true;                                            //marker pin
 
 
@@ -146,7 +203,7 @@ bool input() {
                     for (auto second_element : ver.elements) {                          //open verilog elements
 
                         double mass_koord[4];
-                        coord tempj;
+                        //coord tempj;
                         for (auto second_pins : second_element->pins) {                   //open pins
                             if (second_pins->using_flag == true) continue;               //checking for repetition
                             if (second_pins->name_wire == name_wire) {                  //
@@ -181,11 +238,14 @@ bool input() {
                                     }
                                     break;
                                 }
-                                tempj.x = second_x_1 + (mass_koord[0] + mass_koord[2]) / 2;                      //x_start
-                                tempj.y = second_y_1 + (mass_koord[1] + mass_koord[3]) / 2;                      //y_start
-                                tempj.z = 1;                                                            //z_start
-                                enda.push_back(tempj);                                             //push_back koor-d
+                                //int i = 0;
+                                target_X_mass.push_back (second_x_1 + (mass_koord[0] + mass_koord[2]) / 2);                     //x_start
+                                target_Y_mass.push_back (second_y_1 + (mass_koord[1] + mass_koord[3]) / 2);                     //y_start
+                                //target.z = 1;                                                            //z_start
+                               // enda.push_back(tempj);                                             //push_back koor-d
                                 second_pins->using_flag = true;                                     //marker pin
+                                //classicalImplementation(l1, l2, l3, x, y, source, target, via, swapCoord, floodLessB);
+                                //route--;
                                 break;
                             }
                         }
@@ -193,621 +253,129 @@ bool input() {
                     }
                     continue;
                 }
+
             }
             continue;
         }
     }
-
-    return true;
-}
-//
-//void printMatrix(vector<vector<int>> m, int x, int y) {
-//    for (int i = 0; i < x; i++) {
-//        for (int j = 0; j < y; j++) {
-//            cout << m[i][j] << "\t";
-//        }
-//        cout << endl;
-//    }
-//}
-
-coord traverse(vector <vector<int>>& l, int x, int y, coord s, coord t, bool isSource) {
-    //vertical
-    coord newSource;
-    if (s.z == 2) { //vertical
-        if (isSource) //is s == initial source
-            l[s.x][s.y] = route;
-        else if ((s.x == t.x) && (s.y == t.y) && (s.z == t.z)) { //s is target
-            l[s.x][s.y] = route;
-            cells++;
-            return t;
-        }
-        else if (l[s.x][s.y] == 0)
-            l[s.x][s.y] = route;
-        else //is s is not initial source and it is visited
-            return s;
-        cells++; //increment cells (to account for s)
-        if (t.x > s.x) {
-            for (int i = s.x + 1; i <= t.x; i++) { //iterate vertically from source to target
-                if (l[i][s.y] == 0) { //if cell is empty
-                    l[i][s.y] = route; //visit cell
-                    cells++;
-                }
-                else { //else return
-                    newSource.x = i - 1;
-                    newSource.y = s.y;
-                    newSource.z = s.z;
-                    return newSource;
-                }
-            }
-        }
-        else {
-            for (int i = s.x - 1; i >= t.x; i--) { //iterate vertically from source to target
-                if (l[i][s.y] == 0) { //if cell is empty
-                    l[i][s.y] = route; //visit cell
-                    cells++;
-                }
-                else { //else return
-                    newSource.x = i + 1;
-                    newSource.y = s.y;
-                    newSource.z = s.z;
-                    return newSource;
-                }
-            }
-        }
-        newSource.x = t.x; //t.x is reached
-        newSource.y = s.y; //same y as s
-        newSource.z = s.z; //same z as s
-    }
-    //horizontal
-    else {
-        if (isSource) //is s == initial source
-            l[s.x][s.y] = route;
-        else if ((s.x == t.x) && (s.y == t.y) && (s.z == t.z)) { //s is target
-            l[s.x][s.y] = route;
-            cells++;
-            return t;
-        }
-        else if (l[s.x][s.y] == 0)
-            l[s.x][s.y] = route;
-        else
-            return s; //is s is not initial source and it is visited
-        cells++; //increment cells (to account for s)
-        if (t.y > s.y) {
-            for (int j = s.y + 1; j <= t.y; j++) { //iterate horizontally from source to target
-                if (l[s.x][j] == 0) { //if cell is empty
-                    l[s.x][j] = route; //visit cell
-                    cells++;
-                }
-                else { //else return
-                    newSource.x = s.x;
-                    newSource.y = j - 1;
-                    newSource.z = s.z;
-                    return newSource;
-                }
-            }
-        }
-        else {
-            for (int j = s.y - 1; j >= t.y; j--) { //iterate horizontally from source to target
-                if (l[s.x][j] == 0) { //if cell is empty
-                    l[s.x][j] = route; //visit cell
-                    cells++;
-                }
-                else { //else return
-                    newSource.x = s.x;
-                    newSource.x = s.x;
-                    newSource.y = j + 1;
-                    newSource.z = s.z;
-                    return newSource;
-                }
-            }
-        }
-        newSource.x = s.x; //iteration was only horizontal so same x as s
-        newSource.y = t.y; // y of target is reached
-        newSource.z = s.z; //iteration was only horizontal so same z as s
-    }
-    return newSource;
+    return 0;
 }
 
-bool flood(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord newSource, coord target, int count0, bool isSource) {
-    int count = count0; //initial count
-    switch (newSource.z) {
-    case (1): {
-        if (isSource) //if newSource is the initial source
-            l1[newSource.x][newSource.y] = count; //set cell to initial count (even if it is not empty)
-        else if (l1[newSource.x][newSource.y] == 0 || l1[newSource.x][newSource.y] == route) //else then cell must be empty
-            l1[newSource.x][newSource.y] = count;
-        else
-            return false; //else there is no path
-    }
-            break;
-    case (2): {
-        if (isSource) //if newSource is the initial source
-            l2[newSource.x][newSource.y] = count; //set cell to initial count (even if it is not empty)
-        else if (l2[newSource.x][newSource.y] == 0 || l2[newSource.x][newSource.y] == route) //else then cell must be empty
-            l2[newSource.x][newSource.y] = count;
-        else
-            return false; //else there is no path
-    }
-            break;
-    case (3): {
-        if (isSource) //if newSource is the initial source
-            l3[newSource.x][newSource.y] = count; //set cell to initial count (even if it is not empty)
-        else if (l3[newSource.x][newSource.y] == 0 || l3[newSource.x][newSource.y] == route) //else then cell must be empty
-            l3[newSource.x][newSource.y] = count;
-        else
-            return false; //else there is no path
-    }
-            break;
-    }
-    //for optimization (not implemented)
-    int imin, imax, jmin, jmax;
-    imin = imax = newSource.x;
-    jmin = jmax = newSource.y;
+bool Soukup()
+{
+    setlocale(LC_ALL, "Russian");
 
-    while (count < x * y) {
-        //                for (int i= imin; i<= imax; i++){
-        //                    for (int j = jmin; j <= jmax; j++){
+    //cout << endl << "Вы запустили программу, реализующую алгоритм быстрой трассировки методом Соукупа." << endl
+    //    << "Работу выполнил студент группы ЭН-44 Скорописов Артем." << endl
+    //    << "Алгоритм Соукупа является субоптимальным алгомитмом. ДРП представляет собой поле размером 10х10 ячеек с препятствиями" << endl
+    //    << "Введите координаты терминалов S1, S2, S3 и T1, T2, T3 соответственно, в файле input " << endl;
 
-        //     while (count < (x+y+2*via)){ //maximum count
-        for (int i = 0; i < x; i++) {
-            for (int j = 0; j < y; j++) {
-                if (l1[i][j] == count) { //check if cell in l1 == count
+    //ifstream in("input.txt");                                                                       //считываем вхдные данные 
+    ofstream out2("soukup.txt");
 
-                    if ((i == target.x) && (j == target.y) && (target.z == 2)) { //check is cell above is target
-                        l2[i][j] = count;
-                        return true; //path found
-                    }
-                    if (l2[i][j] == 0) { //check if cell above is empty
-                        l2[i][j] = count;
-                    }
+    input();
+    //if (!input()) {
+    //    std::cout << std::endl << std::endl << "_err_ : Trace error!" << std::endl;
+    //    return EXIT_FAILURE;
+    //}
+    std::cout << std::endl << std::endl << " Datas reading" << std::endl;
 
-                    if ((i == target.x) && ((j + 1) == target.y) && (target.z == 1)) { //check if cell to the right is target
-                        l1[i][j + 1] = count + 1;
-                        return true; //path found
-                    }
-                    if ((j + 1 < y) && (l1[i][j + 1] == 0)) { //check if cell to the right is empty
-                        jmax = j + 1;
-                        //                                i= imin;
-                        l1[i][j + 1] = count + 1;
-                    }
+    n = startX_mass.size();
+    memset(Lblock, false, (n * n) + 1);                                                                 //заполняем блоки памяти Lblock и Sblock 0
+    memset(Sblock, false, (n * n) + 1);
 
-                    if ((i == target.x) && ((j - 1) == target.y) && (target.z == 1)) { //check if cell to the left is target
-                        l1[i][j - 1] = count + 1;
-                        return true; //path found
-                    }
-                    if ((j - 1 >= 0) && (l1[i][j - 1] == 0)) {  //check if cell to the left is empty
-                        jmin = j - 1;
-                        //                                i = imin;
-                        //                                j = jmin;
-                        l1[i][j - 1] = count + 1;
-                    }
-                }
+   // for (int i = 0; i < count_barrier; i++)                                                               //расставляем препятствия из файла
+   // {
+   //     in >> bx >> by;
+   //     Lboard[bx][by] = '#';
+   //     Sboard[bx][by] = '#';
+   //     Lblock[bx * n + by] = true;                                                                         //хз
+   //     Sblock[bx * n + by] = true;
+   // }
+    bool ans[2][10000];
 
+   // in >> count_trace;                                                                                  //кол-во трасс (путей) 
 
-                if (l2[i][j] == count) {  //check if cell in l2 == count
+   // cout << endl << endl;
+   ////_getch();
+   // print_termenal_and_barrier();
+   // cout << endl << endl;
 
-                    if ((j == target.y) && (i == target.x) && (target.z == 1)) { //check if cell below is target
-                        l1[i][j] = count;
-                        return true; //path found
-                    }
-                    if (l1[i][j] == 0) { //check if cell below is empty
-                        l1[i][j] = count;
+    /* создаем и заполняем 4 массива
+     1) массив Х коор-т источников
+     2) массив У коор-т источников
+     3) массив Х коор-т приемников
+     4) массив У коор-т приемников
+     обозначаем источники и приемники соответствующими символами
+     выводим в консоль*/
 
-                    }
+    
+    //for (int i = 0; i < count_trace; i++)                                                                   //расставляем терминалы из файла
+    //{
+    //    in >> ist_x >> ist_y >> target_x >> target_Y;                                     //считываем коор-ты источника и коор-ты приемника
+    //    startX_mass[i] = ist_x;                                       //start_x
+    //    startY_mass[i] = ist_y;                                       //start_y
+    //    target_X_mass[i] = target_x;                                     //target_x
+    //    target_Y_mass[i] = target_Y;                                     //target_y
+    //    Lboard[ist_x][ist_y] = 'S';
+    //    Lboard[target_x][target_Y] = 'T';
+    //    Sboard[ist_x][ist_y] = 'S';
+    //    Sboard[target_x][target_Y] = 'T';
+    //}
+    //print_termenal_and_barrier();
+    //cout << endl << endl;
+    //Timer t;
 
-                    if ((j == target.y) && (i == target.x) && (target.z == 3)) { //check if cell above is target
-                        l3[i][j] = count;
-                        return true; //path found
-                    }
-                    if (l3[i][j] == 0) { //check if cell above is empty
-                        l3[i][j] = count;
-                    }
+    count_trace = startX_mass.size();
+    //--------------------------for Soukup Algorithm---------------------
+    out2 << "Soukup Algorithm : " << endl;
 
-                    if ((j == target.y) && ((i + 1) == target.x) && (target.z == 2)) { //check if cell upwards (in same metal layer) is target
-                        l2[i + 1][j] = count + 1;
-                        return true; //path found
-                    }
-                    if ((i + 1 < x) && (l2[i + 1][j] == 0)) { //check if cell upwards (in same metal layer) is empty
-                        imax = i + 1;
-                        //                                j = jmin;
-                        l2[i + 1][j] = count + 1;
-                    }
+    for (int i = 0; i < count_trace; i++)                                       //для каждой пары приемник-источник
+    {
+        ist_x = startX_mass[i];
+        ist_y = startY_mass[i];
+        target_x = target_X_mass[i];
+        target_Y = target_Y_mass[i];
+        //for Lee's algorithm
+        if (SoukupAlgo(ist_x, ist_y, target_x, target_Y) == true)                           //если трассировка прошла успешно, визуализируем ее в консоле
+        {
 
-                    if ((j == target.y) && ((i - 1) == target.x) && (target.z == 2)) { //check if cell downwards (in same metal layer) is target
-                        l2[i - 1][j] = count + 1;
-                        return true; //path found
-                    }
-                    if ((i - 1 >= 0) && (l2[i - 1][j] == 0)) { //check is cell downwards (in same metal layer) is empty
-                        imin = i - 1;
-                        //                                j = jmin;
-                        //                                i = imin;
-                        l2[i - 1][j] = count + 1;
-                    }
-                }
-
-                if (l3[i][j] == count) { //check if cell in l3 == count
-
-                    if ((i == target.x) && (j == target.y) && (target.z == 2)) { //check if cell below is target
-                        l2[i][j] = count;
-                        return true; //path found
-                    }
-                    if (l2[i][j] == 0) { //check if cell below is empty
-                        l2[i][j] = count;
-                    }
-
-                    if ((i == target.x) && ((j + 1) == target.y) && (target.z == 3)) { //check if cell to the right is target
-                        l3[i][j + 1] = count + 1;
-                        return true; //path found
-                    }
-                    if ((j + 1 < y) && (l3[i][j + 1] == 0)) { //check if cell to the right is empty
-                        jmax = j + 1;
-                        //                                i = imin;
-                        l3[i][j + 1] = count + 1;
-                    }
-
-                    if ((i == target.x) && ((j - 1) == target.y) && (target.z == 3)) { //check if cell to the left if target
-                        l3[i][j - 1] = count + 1;
-                        return true; //path found
-                    }
-                    if ((j - 1 >= 0) && (l3[i][j - 1] == 0)) { //check if cell to the left is empty
-                        jmin = j - 1;
-                        //                                    i = imin;
-                        //                                    j = jmin;
-                        l3[i][j - 1] = count + 1;
-                    }
-                }
+            int id = target_x * n + target_Y;
+            Sblock[id] = true;
+            Sblock[ist_x * n + ist_y] = true;
+            while (Spath[id] != -1)
+            {
+                Sboard[Spath[id] / n][Spath[id] % n] = '*';
+                Sblock[Spath[id]] = true;
+                id = Spath[id];
             }
+            Sboard[ist_x][ist_y] = 'S';
+            ans[1][i] = true;
+            cout << endl << "Trace " << i << " ready";
         }
-        count++;
-
+        
+        //else                                                         //если нельзя провести трассировку
+        //{
+        //    Sboard[ist_x][ist_y] = 's';
+        //    Sboard[target_x][target_Y] = 't';
+        //    ans[1][i] = false;
+        //}
     }
-    return false; //path not found
-}
-
-bool backTracking(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord source, coord target, coord source1) {
-    int count = 0; //count we're looking for
-    switch (target.z) {
-    case(1): {
-        count = l1[target.x][target.y]; //initialize count with cost of target cell
-        l1[target.x][target.y] = route; //set target cell to route
+    //double time_algotim = t.elapsed();
+    cout << endl << "Trace completed successfully";
+    for (int i = 0; i < n; i++)                                                     //вывод результата в файл
+    {
+        for (int j = 0; j < n; j++) out2 << Sboard[i][j] << " ";
+        out2 << endl;
     }
-           break;
-    case(2): {
-        count = l2[target.x][target.y]; //initialize count with cost of target cell
-        l2[target.x][target.y] = route;  //set target cell to route
-    }
-           break;
-    case(3): {
-        count = l3[target.x][target.y]; //initialize count with cost of target cell
-        l3[target.x][target.y] = route;  //set target cell to route
-    }
-           break;
-    }
-
-    if (count <= 0) //did not reach target and there is no route
-        return false;
-    int i = target.x;
-    int j = target.y;
-    int z = target.z;
-    while ((i != source.x) || (j != source.y) || (z != source.z)) {
-        //horizontal
-        if (z == 1) {
-            if ((j - 1 >= 0) && (l1[i][j - 1] == (count - 1)) && (l1[i][j - 1] >= 0)) { //checking if next cell in route is left cell
-                l1[i][j - 1] = route;
-                j--;
-                count--;
-            }
-            else if ((j + 1 < y) && (l1[i][j + 1] == (count - 1)) && (l1[i][j + 1] >= 0)) { //checking if next cell in route is right cell
-                l1[i][j + 1] = route;
-                j++;
-                count--;
-            }
-            else if (l2[i][j] == (count) && (l2[i][j] >= 0)) { //checking if next cell in route is cell above
-                z = 2;
-                l2[i][j] = route;
-                l1[i][j] = route;
-                //                l2[i][j] = v12;
-                //                l1[i][j] = v12;
-            }
-        }
-        else if (z == 3) {
-            if ((j - 1 >= 0) && (l3[i][j - 1] == (count - 1)) && (l3[i][j - 1] >= 0)) { //checking if next cell in route is left cell
-                l3[i][j - 1] = route;
-                j--;
-                count--;
-            }
-            else if ((j + 1 < y) && (l3[i][j + 1] == (count - 1)) && (l3[i][j + 1] >= 0)) { //checking if next cell in route is right cell
-                l3[i][j + 1] = route;
-                j++;
-                count--;
-            }
-            else if (l2[i][j] == (count) && (l2[i][j] >= 0)) { //checking if next cell in route is cell below
-                z = 2;
-                //                l2[i][j] = v23;
-                //                l3[i][j] = v23;
-                l2[i][j] = route;
-                l3[i][j] = route;
-            }
-        }
-        //vertical
-        else {
-            if ((i - 1 >= 0) && (l2[i - 1][j] == (count - 1)) && (l2[i - 1][j] >= 0)) { //checking if next cell in route is cell downwards (in same metal layer)
-                l2[i - 1][j] = route;
-                i--;
-                count--;
-            }
-            else if ((i + 1 < x) && (l2[i + 1][j] == (count - 1)) && (l2[i + 1][j] >= 0)) { //checking if next cell in route is cell upwards (in same metal layer)
-                l2[i + 1][j] = route;
-                i++;
-                count--;
-            }
-            else if (l3[i][j] == (count) && (l3[i][j] >= 0)) { //checking if next cell in route is cell above
-                z = 3;
-                //                l3[i][j] = v23;
-                //                l2[i][j] = v23;
-                l3[i][j] = route;
-                l2[i][j] = route;
-            }
-            else if (l1[i][j] == (count) && (l1[i][j] >= 0)) { //checking if next cell in route is cell below
-//                l1[i][j] = v12;
-//                l2[i][j] = v12;
-                l1[i][j] = route;
-                l2[i][j] = route;
-                z = 1;
-            }
+    out2 << endl;
+    for (int i = 0; i < count_trace; i++)                                               //если нельзя провести трассировку
+    {
+        if (ans[1][i] == false)
+        {
+            out2 << " (" << ist_x << "," << ist_y << ")->(" << target_x << "," << target_Y << ") невозможно провести трассировку." << endl;
         }
     }
 
-    return true;
-}
-
-void backToLife(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y) {
-    for (int i = 0; i < x; i++) {
-        for (int j = 0; j < y; j++) {
-            // emptying flooded cells that are not part of route
-            if (l1[i][j] > 0)
-                l1[i][j] = 0;
-            if (l2[i][j] > 0)
-                l2[i][j] = 0;
-            if (l3[i][j] > 0)
-                l3[i][j] = 0;
-            //getting # of cells
-            if (l1[i][j] == route)
-                cells++;
-            if (l2[i][j] == route)
-                cells++;
-            if (l3[i][j] == route)
-                cells++;
-        }
-    }
-}
-
-void classicalImplementation(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord source, coord target, bool swapCoord, bool floodLessB) {
-    coord newSource;
-    cells = 0; //# of cells
-    bool isSource = true; //source is same as newSource
-    int swap;
-    if (swapCoord) //if target and source will be swapped if no source
-        swap = 2; //swap = 2 (to allow for 1 swap)
-    else
-        swap = 1; //swap = 1 (to allow for 0 swaps)
-
-    while (swap > 0) {
-        switch (source.z) {
-        case(1): {
-            s_value = l1[source.x][source.y]; //s_value is values of source cell (used if no path is available to retrieve old matrix)                      //выход за пределы масива(
-            if (!floodLessB) //if implementation is not floodLess (more DFS)
-                newSource = traverse(l1, x, y, source, target, isSource);
-        }
-               break;
-        case (2): {
-            s_value = l2[source.x][source.y]; //s_value is values of source cell (used if no path is available to retrieve old matrix)
-            if (!floodLessB) //if implementation is not floodLess (more DFS)
-                newSource = traverse(l2, x, y, source, target, isSource);
-        }
-                break;
-        case (3): {
-            s_value = l3[source.x][source.y]; //s_value is values of source cell (used if no path is available to retrieve old matrix)
-            if (!floodLessB) //if implementation is not floodLess (more DFS)
-                newSource = traverse(l3, x, y, source, target, isSource);
-        }
-                break;
-        }
-
-        switch (target.z) {
-        case(1): {
-            t_value = l1[target.x][target.y]; //t_value is values of target cell (used if no path is available to retrieve old matrix)
-        }
-               break;
-        case (2): {
-            t_value = l2[target.x][target.y]; //t_value is values of target cell (used if no path is available to retrieve old matrix)
-        }
-                break;
-        case (3): {
-            t_value = l3[target.x][target.y]; //t_value is values of target cell (used if no path is available to retrieve old matrix)
-        }
-                break;
-        }
-
-        if (floodLessB) //if implementation is floodLess (more DFS)
-            newSource = floodLess(l1, l2, l3, x, y, source, target);
-
-        int count0 = 1; //initial count for cell in flooding
-
-        //if target is reached
-        if ((newSource.x == target.x) && (newSource.y == target.y) && (newSource.z == target.z)) {
-    /*        printMatrix(l1, x, y);
-            cout << endl << endl;
-            printMatrix(l2, x, y);
-            cout << endl << endl;
-            printMatrix(l3, x, y);
-            cout << endl << endl;
-             cout << "Cost = " << (cells + vias * via) << endl;*/
-            return;
-        }
-        else {
-            cells = 0; //reset cells count
-            if ((source.x != newSource.x) && (source.y != newSource.y) && (source.z != newSource.z))
-                isSource = false;
-        }
-        flood(l1, l2, l3, x, y, newSource, target, count0, isSource);
-
-
-        //        ///////////////////
-        //        //remove before submission
-        //        cout << "Flooding" << endl;
-        //        printMatrix(l1, x, y);
-        //        cout << endl << endl;
-        //        printMatrix(l2, x, y);
-        //        cout << endl << endl;
-        //        printMatrix(l3, x, y);
-        //        cout << endl << endl;
-        //        ///////////////////
-        //        //remove before submission
-
-
-        if (backTracking(l1, l2, l3, x, y, newSource, target, source)) { //get route
-            backToLife(l1, l2, l3, x, y); //empty flooded, non-routed cells
-          /*  cout << "BACKTRACKING" << endl;
-             printMatrix(l1, x, y);
-            cout << endl << endl;
-            printMatrix(l2, x, y);
-            cout << endl << endl;
-            printMatrix(l3, x, y);
-            cout << endl << endl;
-            cout << "Cost = " << (cells + vias * via) << endl;*/
-            swap = 0; //set swap to 0 (aka do not swap) because path is found
-        }
-        else {
-            swap--; //decrement swap
-            backToLife(l1, l2, l3, x, y); //empty flooded cells
-            cells = 0;
-            switch (source.z) {
-            case(1): undoTraversal(l1, x, y, source, newSource); //remove traversed cells as no path is found
-                break;
-            case (2): undoTraversal(l2, x, y, source, newSource); //remove traversed cells as no path is found
-                break;
-            case (3): undoTraversal(l3, x, y, source, newSource); //remove traversed cells as no path is found
-                break;
-            }
-            switch (target.z) {
-            case(1): {
-                l1[target.x][target.y] = t_value; //set target cell to target value before flooding or traversal
-            }
-                   break;
-            case(2): {
-                l2[target.x][target.y] = t_value; //set target cell to target value before flooding or traversal
-            }
-                   break;
-            case(3): {
-                l3[target.x][target.y] = t_value; //set target cell to target value before flooding or traversal
-            }
-                   break;
-            }
-            //swap source and target
-            coord temp = source;
-            source = target;
-            target = temp;
-            if (swap == 0) { //if no more swaps, print grids anyway
-                cout << "No Path available" << endl;
-                //route++;
-                //printMatrix(l1, x, y);
-                //cout << endl << endl;
-                //printMatrix(l2, x, y);
-                //cout << endl << endl;
-                //printMatrix(l3, x, y);
-                //cout << endl << endl;
-            }
-        }
-    }
-}
-
-void undoTraversal(vector<vector<int>>& l, int x, int y, coord s, coord t) {
-    if (s.z == 2) {
-        if (t.x > s.x) {
-            for (int i = s.x + 1; i <= t.x; i++) { //vertical
-                if (l[i][s.y] == route) { //if cell was part of route
-                    l[i][s.y] = 0; //empty cell
-                }
-            }
-        }
-        else { //vertical
-            for (int i = s.x + 1; i >= t.x; i--) {
-                if (l[i][s.y] == route) { //if cell was part of route
-                    l[i][s.y] = 0; //empty cell
-                }
-            }
-        }
-    }
-    //horizontal
-    else {
-        if (t.y > s.y) {
-            for (int j = s.y + 1; j <= t.y; j++) {
-                if (l[s.x][j] == route) { //if cell was part of route
-                    l[s.x][j] = 0; //empty cell
-                }
-            }
-        }
-        else {
-            for (int j = s.y + 1; j >= t.y; j--) {
-                if (l[s.x][j] == route) { //if cell was part of route
-                    l[s.x][j] = 0; //empty cell
-                }
-            }
-        }
-    }
-    l[s.x][s.y] = s_value; //set source to value before filling (might not be zero)
-}
-
-coord floodLess(vector<vector<int>>& l1, vector<vector<int>>& l2, vector<vector<int>>& l3, int x, int y, coord newSource, coord target) {
-    int count = 0;
-    coord newSource1; //return of traverse
-    coord newSource2 = newSource; //parameter of traverse
-    coord newSourceBuffer; //to save last value of newSource1
-    newSourceBuffer = newSource; //initially it is set to newSource
-    while (count < 3) {
-        //check is initial newSource is the same as newSource2
-        bool isSource = (newSource2.x == newSource.x) && (newSource2.y == newSource.y) && (newSource2.z == newSource.z);
-        switch (newSource2.z) {
-        case 1: newSource1 = traverse(l1, x, y, newSource2, target, isSource);
-            break;
-        case 2:newSource1 = traverse(l2, x, y, newSource2, target, isSource);
-            break;
-        case 3:
-            newSource1 = traverse(l3, x, y, newSource2, target, isSource);
-            break;
-        default:
-            break;
-        }
-        if ((newSource1.x == newSource2.x) && (newSource1.y == newSource2.y) && (newSource1.z == newSource2.z)) { //no traverse
-            if ((newSource1.x == target.x) && (newSource1.y == target.y) && (newSource1.z == target.z)) //target reached
-                return target;
-            //if (newSourceBuffer.z != newSource1.z) //if no traverse, reduce vias
-            return newSourceBuffer; //return saved newSource1 value
-        }
-        else {
-            newSource2 = newSource1;
-        }
-
-        if ((newSource2.x == target.x) && (newSource2.y == target.y) && (newSource2.z == target.z)) { //target reached
-            return target;
-        }
-        else {
-            if (newSource2.z < target.z) { //z of target is greater
-                newSource2.z = ((newSource2.z) % 3) + 1; //increment z sent to traverse
-            }
-            else if (newSource2.z > target.z) { //z of target is less
-                newSource2.z = ((newSource2.z - 1) % 3); //decrement z sent to traverse
-            }
-            else if ((newSource2.z == target.z) && ((target.z == 1) || (target.z == 3)) && (newSource2.x != target.x)) { //horizontal layer and there is a difference vertically
-                newSource2.z = 2;
-            }
-            else if ((newSource2.z == target.z) && (target.z == 2) && (newSource2.y != target.y)) { //vertical layer and their is a difference horizontally
-                newSource2.z = ((newSource2.z) % 3) + 1;
-            }
-        }
-        newSourceBuffer = newSource1; //update buffer
-        count++;
-    }
-    return newSource1;
+    return 0;
 }

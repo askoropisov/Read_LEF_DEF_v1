@@ -108,66 +108,66 @@ void RenderScene() {
 		}
 		
 	}
-	if (key_layer1 % 2 == 0) {															//draw layer 1
-		for (int i = 0; i < xd; i++) {
-			for (int j = 0; j < yd; j++) {
-				switch (l1_print[i][j])
-				{
-				case 0:
-					break;
-				default:
-					glBegin(GL_QUADS);
-					glColor3f(0.4, 0.5, 0);
-					glVertex3f(i - 1, j - 1, 4);
-					glVertex3f(i + 1, j - 1, 4);
-					glVertex3f(i + 1, j + 1, 4);
-					glVertex3f(i - 1, j + 1, 4);
-					break;
-				}
-			}
-		}
+	//if (key_layer1 % 2 == 0) {															//draw layer 1
+	//	for (int i = 0; i < xd; i++) {
+	//		for (int j = 0; j < yd; j++) {
+	//			switch (l1_print[i][j])
+	//			{
+	//			case 0:
+	//				break;
+	//			default:
+	//				glBegin(GL_QUADS);
+	//				glColor3f(0.4, 0.5, 0);
+	//				glVertex3f(i - 1, j - 1, 4);
+	//				glVertex3f(i + 1, j - 1, 4);
+	//				glVertex3f(i + 1, j + 1, 4);
+	//				glVertex3f(i - 1, j + 1, 4);
+	//				break;
+	//			}
+	//		}
+	//	}
 
-	}
-	if (key_layer2 % 2 == 0) {															//draw layer 2
-		for (int i = 0; i < xd; i++) {
-			for (int j = 0; j < yd; j++) {
-				switch (l2_print[i][j])
-				{
-				case 0:
-					break;
-				default:
-					glBegin(GL_QUADS);
-					glColor3f(1, 1, 1);
-					glVertex3f(i - 1, j - 1, 5);
-					glVertex3f(i + 1, j - 1, 5);
-					glVertex3f(i + 1, j + 1, 5);
-					glVertex3f(i - 1, j + 1, 5);
-					break;
-				}
-			}
-		}
+	//}
+	//if (key_layer2 % 2 == 0) {															//draw layer 2
+	//	for (int i = 0; i < xd; i++) {
+	//		for (int j = 0; j < yd; j++) {
+	//			switch (l2_print[i][j])
+	//			{
+	//			case 0:
+	//				break;
+	//			default:
+	//				glBegin(GL_QUADS);
+	//				glColor3f(1, 1, 1);
+	//				glVertex3f(i - 1, j - 1, 5);
+	//				glVertex3f(i + 1, j - 1, 5);
+	//				glVertex3f(i + 1, j + 1, 5);
+	//				glVertex3f(i - 1, j + 1, 5);
+	//				break;
+	//			}
+	//		}
+	//	}
 
-	}
-	if (key_layer3 % 2 == 0) {															//draw layer 3
-		for (int i = 0; i < xd; i++) {
-			for (int j = 0; j < yd; j++) {
-				switch (l3_print[i][j])
-				{
-				case 0:
-					break;
-				default:
-					glBegin(GL_QUADS);
-					glColor3f(0.4, 0.5, 0);
-					glVertex3f(i - 1, j - 1, 6);
-					glVertex3f(i + 1, j - 1, 6);
-					glVertex3f(i + 1, j + 1, 6);
-					glVertex3f(i - 1, j + 1, 6);
-					break;
-				}
-			}
-		}
+	//}
+	//if (key_layer3 % 2 == 0) {															//draw layer 3
+	//	for (int i = 0; i < xd; i++) {
+	//		for (int j = 0; j < yd; j++) {
+	//			switch (l3_print[i][j])
+	//			{
+	//			case 0:
+	//				break;
+	//			default:
+	//				glBegin(GL_QUADS);
+	//				glColor3f(0.4, 0.5, 0);
+	//				glVertex3f(i - 1, j - 1, 6);
+	//				glVertex3f(i + 1, j - 1, 6);
+	//				glVertex3f(i + 1, j + 1, 6);
+	//				glVertex3f(i - 1, j + 1, 6);
+	//				break;
+	//			}
+	//		}
+	//	}
 
-	}
+	//}
 
 
     // Конец нашего кода
