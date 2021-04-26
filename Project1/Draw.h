@@ -3,12 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include "LEF_class.h"
-#include "DEF_class.h"
-#include "VER_class.h"
-#include "LEF_reading.h"
-#include "DEF_reading.h"
-#include "VER_reading.h"
+
 #include "glut.h"
 
 
@@ -27,9 +22,8 @@ int key_layer1 = 0;
 int key_layer2 = 0;
 int key_layer3 = 0;
 
-extern vector <vector <int>> l1,l2,l3;
-int xd = def.x_2 - def.x_1;
-int yd = def.y_2 - def.y_1;
+extern std::vector <std::vector <int>> l1_print, l2_print, l3_print;
+
 
 
 void RenderScene() {
@@ -47,6 +41,9 @@ void RenderScene() {
 	glRotatef(vx, 1, 0, 0);
 	glRotatef(vy, 0, 1, 0);
 	glRotatef(vz, 0, 0, 1);
+
+	int xd = (def.x_2 - def.x_1) ;
+	int yd = (def.y_2 - def.y_1);
     // Начало нашего кода
 
 	//draw cristall
@@ -93,7 +90,7 @@ void RenderScene() {
 							++i;
 						}
 						glBegin(GL_LINE_LOOP);							//draw pins (rects or rolygons)
-						glColor3f(0, 0, 1);
+						glColor3f(1, 1, 0);
 						glVertex3f(mass_koord[0] + x_1, mass_koord[1] + y_1, z);		
 						glVertex3f(mass_koord[2] + x_1, mass_koord[1] + y_1, z);
 						glVertex3f(mass_koord[2] + x_1, mass_koord[3] + y_1, z);
@@ -108,72 +105,120 @@ void RenderScene() {
 		}
 		
 	}
-	//if (key_layer1 % 2 == 0) {															//draw layer 1
-	//	for (int i = 0; i < xd; i++) {
-	//		for (int j = 0; j < yd; j++) {
+
+	
+
+	//draw traces
+
+	//for (int i = 0; i < xd; i+=10) {
+	//	for (int j = 0; j < yd; j+=10) {
+	//		//layer 1
+	//		if (key_layer1 % 2 == 0) {
 	//			switch (l1_print[i][j])
 	//			{
 	//			case 0:
+	//				/*glBegin(GL_QUADS);
+	//				glColor3f(1, 1, 1);
+	//				glVertex3f(i - 1, j - 1, 3);
+	//				glVertex3f(i + 1, j - 1, 3);
+	//				glVertex3f(i + 1, j + 1, 3);
+	//				glVertex3f(i - 1, j + 1, 3);
+	//				glEnd();*/
 	//				break;
+
+	//				/*case (-10):
+	//					glBegin(GL_QUADS);
+	//					glColor3f(1, 0, 0);
+	//					glVertex3f(i - 1, j - 1, 4);
+	//					glVertex3f(i + 1, j - 1, 4);
+	//					glVertex3f(i + 1, j + 1, 4);
+	//					glVertex3f(i - 1, j + 1, 4);
+	//					break;*/
 	//			default:
 	//				glBegin(GL_QUADS);
-	//				glColor3f(0.4, 0.5, 0);
-	//				glVertex3f(i - 1, j - 1, 4);
-	//				glVertex3f(i + 1, j - 1, 4);
-	//				glVertex3f(i + 1, j + 1, 4);
-	//				glVertex3f(i - 1, j + 1, 4);
+	//				glColor3f(1, 0, 0);
+	//				glVertex3f(i - 1,  j - 1, 6);
+	//				glVertex3f( i + 1,  j - 1, 6);
+	//				glVertex3f( i + 1,  j + 1, 6);
+	//				glVertex3f( i - 1,  j + 1, 6);
+	//				glEnd();
 	//				break;
 	//			}
 	//		}
-	//	}
-
-	//}
-	//if (key_layer2 % 2 == 0) {															//draw layer 2
-	//	for (int i = 0; i < xd; i++) {
-	//		for (int j = 0; j < yd; j++) {
+	//		//layer 2
+	//		if (key_layer2 % 2 == 0) {
 	//			switch (l2_print[i][j])
 	//			{
 	//			case 0:
+	//				/*glBegin(GL_QUADS);
+	//				glColor3f(1, 1, 1);
+	//				glVertex3f(i - 1, j - 1, 3);
+	//				glVertex3f(i + 1, j - 1, 3);
+	//				glVertex3f(i + 1, j + 1, 3);
+	//				glVertex3f(i - 1, j + 1, 3);
+	//				glEnd();
+	//				break;*/
 	//				break;
+
 	//			default:
 	//				glBegin(GL_QUADS);
-	//				glColor3f(1, 1, 1);
-	//				glVertex3f(i - 1, j - 1, 5);
-	//				glVertex3f(i + 1, j - 1, 5);
-	//				glVertex3f(i + 1, j + 1, 5);
-	//				glVertex3f(i - 1, j + 1, 5);
+	//				glColor3f(1, 0, 0);
+	//				glVertex3f( i - 1,  j - 1, 6);
+	//				glVertex3f( i + 1,  j - 1, 6);
+	//				glVertex3f( i + 1, j + 1, 6);
+	//				glVertex3f( i - 1,  j + 1, 6);
+	//				glEnd();
 	//				break;
 	//			}
 	//		}
-	//	}
-
-	//}
-	//if (key_layer3 % 2 == 0) {															//draw layer 3
-	//	for (int i = 0; i < xd; i++) {
-	//		for (int j = 0; j < yd; j++) {
+	//		if (key_layer3 % 2 == 0) {
 	//			switch (l3_print[i][j])
 	//			{
 	//			case 0:
+	//				/*glBegin(GL_QUADS);
+	//				glColor3f(1, 1, 1);
+	//				glVertex3f(i - 1, j - 1, 3);
+	//				glVertex3f(i + 1, j - 1, 3);
+	//				glVertex3f(i + 1, j + 1, 3);
+	//				glVertex3f(i - 1, j + 1, 3);
+	//				glEnd();
+	//				break;*/
 	//				break;
+
 	//			default:
 	//				glBegin(GL_QUADS);
-	//				glColor3f(0.4, 0.5, 0);
-	//				glVertex3f(i - 1, j - 1, 6);
-	//				glVertex3f(i + 1, j - 1, 6);
-	//				glVertex3f(i + 1, j + 1, 6);
-	//				glVertex3f(i - 1, j + 1, 6);
+	//				glColor3f(1, 0, 0);
+	//				glVertex3f( i - 1,  j - 1, 6);
+	//				glVertex3f( i + 1,  j - 1, 6);
+	//				glVertex3f( i + 1,  j + 1, 6);
+	//				glVertex3f( i - 1,  j + 1, 6);
+	//				glEnd();
 	//				break;
 	//			}
 	//		}
 	//	}
-
 	//}
-
 
     // Конец нашего кода
     glutSwapBuffers();
 }
-
+//
+//void Print_newDRP(char Sboard[10000][10000])									//заполняем матрицу символами
+//{
+//	for (int i = 0; i < 10000; i++)
+//	{
+//		for (int j = 0; j < 10000; j++)
+//		{
+//			//if (Sboard[i][j] == '0') newDRP[i][j] = 0;
+//			//if (Sboard[i][j] == 'S') newDRP[i][j] = -1;
+//			//if (Sboard[i][j] == 'T') newDRP[i][j] = -2;
+//			//if (Sboard[i][j] == 's') newDRP[i][j] = -1;
+//			//if (Sboard[i][j] == 't') newDRP[i][j] = -2;
+//			//if (Sboard[i][j] == '#') newDRP[i][j] = 999;
+//			if (Sboard[i][j] == '*') newDRP[i][j] = 777;
+//		}
+//	}
+//}
 
 
 
@@ -201,9 +246,9 @@ void Read_kb(unsigned char key, int, int)				// zoom and control
 	if (key == '1')
 		key_layer1 +=1;
 	if (key == '2')
-		key_layer1 +=1;
+		key_layer2 +=1;
 	if (key == '3')
-		key_layer1 +=1;
+		key_layer3 +=1;
 	if (key == 27)
 		exit(0);
 	glutPostRedisplay();

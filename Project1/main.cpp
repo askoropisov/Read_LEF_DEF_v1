@@ -55,7 +55,10 @@ bool check_compliance(){                                        //LEF and DEF fi
         return false;
 }
 
+
+
 bool Soukup();
+ 
 
 int main(int argc, char* argv[]) {
 
@@ -67,7 +70,6 @@ int main(int argc, char* argv[]) {
     }
     std::cout << std::endl << " LEF file read successfully" << std::endl;
 
-
     //DEF main
     
     if (!def.Read(defFileName)) {
@@ -75,8 +77,6 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     }
     std::cout << std::endl <<std::endl<< " DEF file read successfully" << std::endl;
-
-
 
     //Verilog main
 
@@ -94,13 +94,6 @@ int main(int argc, char* argv[]) {
     };  
 
     Soukup();
-    //if (!Soukup()) {
-    //    std::cout << std::endl << std::endl << "_err_ : Trace error!" << std::endl;
-    //    return EXIT_FAILURE;
-    //}
-    //std::cout << std::endl << std::endl << " Trace successfully" << std::endl;
-
-
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
