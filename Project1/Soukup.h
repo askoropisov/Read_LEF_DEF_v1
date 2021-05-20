@@ -46,7 +46,10 @@ bool Soukup() {                    //need assign a function
     vector <vector <int>> l1(x, rows); //layer 1
     vector <vector <int>> l2(x, rows); //layer 2
     vector <vector <int>> l3(x, rows); //layer 3
-
+    vector<int> st_x;
+    vector<int> st_y;
+    vector<int> end_y;
+    vector<int> end_x;
 
     for (int i = 0; i < x; i++) {
         for (int j = 0; j < y; j++) {
@@ -108,8 +111,8 @@ bool Soukup() {                    //need assign a function
                     //name_wire = pins->name_wire;                                        //save name_wire
                     source.x = (x_1 + (mass_koord[0] + mass_koord[2]) / 2);                      //x_start
                     source.y = (y_1 + (mass_koord[1] + mass_koord[3]) / 2);                      //y_start
-                    //st_x.push_back((x_1 + (mass_koord[0] + mass_koord[2]) / 2) / 10);
-                    //st_y.push_back((y_1 + (mass_koord[1] + mass_koord[3]) / 2) / 10);
+                    st_x.push_back((x_1 + (mass_koord[0] + mass_koord[2]) / 2) / 10);
+                    st_y.push_back((y_1 + (mass_koord[1] + mass_koord[3]) / 2) / 10);
                     source.z = 1;                                                            //z_start
                     //start.push_back(tempi);                                             //push_back koor-d
                     pins->using_flag = true;                                            //marker pin
@@ -161,11 +164,11 @@ bool Soukup() {                    //need assign a function
                                 target.x = (second_x_1 + (mass_koord[0] + mass_koord[2]) / 2);                      //x_start
                                 target.y = (second_y_1 + (mass_koord[1] + mass_koord[3]) / 2);                      //y_start
                                 target.z = 1;                                                            //z_start
-                                //end_x.push_back((second_x_1 + (mass_koord[0] + mass_koord[2]) / 2) / 10);
-                                //end_y.push_back((second_y_1 + (mass_koord[1] + mass_koord[3]) / 2) / 10);
+                                end_x.push_back((second_x_1 + (mass_koord[0] + mass_koord[2]) / 2) / 10);
+                                end_y.push_back((second_y_1 + (mass_koord[1] + mass_koord[3]) / 2) / 10);
                                // enda.push_back(tempj);                                             //push_back koor-d
                                 second_pins->using_flag = true;                                     //marker pin
-                                classicalImplementation(l1, l2, l3, x, y, source, target, via, swapCoord, floodLessB);
+                                //classicalImplementation(l1, l2, l3, x, y, source, target, via, swapCoord, floodLessB);
                                 time = clock() - time;                      //to measure CPU time
                                 route--;
                                
@@ -174,17 +177,17 @@ bool Soukup() {                    //need assign a function
                                 break;
                             }
                         }
-                        if (trace_count == 4) break;
+                        //if (trace_count == 4) break;
                         continue;
                     }
-                    if (trace_count == 4) break;
+                    //if (trace_count == 4) break;
                     continue;
                 }
             }
-            if (trace_count == 4) break;
+            //if (trace_count == 4) break;
             continue;
         }
-        if (trace_count == 4) break;
+        //if (trace_count == 4) break;
     }
     l1_print = l1;
     l2_print = l2;

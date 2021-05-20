@@ -93,7 +93,7 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     };  
 
-    Soukup();
+    //Soukup();
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
